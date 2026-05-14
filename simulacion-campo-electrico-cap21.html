@@ -1,0 +1,991 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Profesor Wong. Om Sai Ram JRW">
+  <meta name="copyright" content="Copyright Profesor Wong. Om Sai Ram JRW. Todos los derechos reservados.">
+  <title>Capitulo 21 - Simulacion de Campo Electrico</title>
+  <style>
+    :root {
+      --ink: #121212;
+      --paper: #fffdf4;
+      --blue: #0f55aa;
+      --blue-soft: #d9ecff;
+      --red: #e43622;
+      --red-soft: #ffe1d7;
+      --purple: #6b238e;
+      --green: #16773a;
+      --yellow: #ffd33d;
+      --line: #1d1d1d;
+      --panel: #ffffff;
+      --shadow: rgba(0, 0, 0, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 18px 18px, rgba(15, 85, 170, 0.06) 1px, transparent 2px),
+        linear-gradient(180deg, #fffdf7, #fff7df);
+      font-family: "Trebuchet MS", Arial, sans-serif;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 12px;
+      padding: 14px;
+    }
+
+    header {
+      border: 3px solid var(--line);
+      background: var(--paper);
+      box-shadow: 0 3px 0 var(--ink);
+      padding: 12px 14px;
+    }
+
+    .ribbon {
+      display: inline-block;
+      padding: 4px 18px;
+      color: white;
+      background: var(--blue);
+      border: 2px solid #07366f;
+      font-weight: 900;
+      letter-spacing: 1px;
+      transform: skew(-12deg);
+      box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.25);
+    }
+
+    .ribbon span {
+      display: inline-block;
+      transform: skew(12deg);
+    }
+
+    h1 {
+      margin: 8px 0 2px;
+      font-size: clamp(32px, 6vw, 74px);
+      line-height: 0.92;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--blue);
+      font-weight: 900;
+      font-size: clamp(16px, 2.5vw, 28px);
+      text-transform: uppercase;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(320px, 1fr) 360px;
+      gap: 12px;
+      min-height: 0;
+    }
+
+    .board-wrap,
+    .controls {
+      border: 3px solid var(--line);
+      background: var(--paper);
+      box-shadow: 0 3px 0 var(--ink);
+      min-height: 0;
+    }
+
+    .board-wrap {
+      position: relative;
+      overflow: hidden;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      min-height: 620px;
+      display: block;
+      cursor: grab;
+      touch-action: none;
+      background:
+        linear-gradient(rgba(15, 85, 170, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15, 85, 170, 0.07) 1px, transparent 1px),
+        #fffdf5;
+      background-size: 34px 34px;
+    }
+
+    canvas.no-grid {
+      background: #fffdf5;
+    }
+
+    canvas:active {
+      cursor: grabbing;
+    }
+
+    .badge {
+      position: absolute;
+      left: 12px;
+      top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border: 2px solid var(--line);
+      background: rgba(255, 253, 244, 0.92);
+      font-weight: 900;
+      color: var(--purple);
+      pointer-events: none;
+    }
+
+    .badge-number {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: var(--purple);
+      border-radius: 4px;
+      box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.25);
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      overflow: auto;
+    }
+
+    .section {
+      padding: 14px;
+      border-bottom: 2px solid var(--line);
+    }
+
+    .section:last-child {
+      border-bottom: 0;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 10px;
+      color: var(--blue);
+      font-size: 20px;
+      text-transform: uppercase;
+      font-weight: 900;
+    }
+
+    .section-title b {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      color: #fff;
+      background: var(--blue);
+      border-radius: 4px;
+    }
+
+    .charge-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .charge-card {
+      border: 2px solid var(--line);
+      background: var(--panel);
+      padding: 10px;
+      box-shadow: 2px 2px 0 var(--shadow);
+    }
+
+    .charge-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-weight: 900;
+    }
+
+    .dot {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--line);
+      border-radius: 50%;
+      display: inline-grid;
+      place-items: center;
+      color: white;
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .dot.positive {
+      background: var(--red);
+    }
+
+    .dot.negative {
+      background: var(--blue);
+    }
+
+    .dot.test {
+      background: var(--green);
+    }
+
+    label {
+      display: grid;
+      gap: 4px;
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--blue);
+    }
+
+    input[type="number"],
+    select {
+      width: 100%;
+      border: 2px solid var(--line);
+      background: #fff;
+      padding: 8px;
+      font: inherit;
+      font-weight: 800;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    button {
+      border: 2px solid var(--line);
+      background: var(--yellow);
+      color: var(--ink);
+      padding: 10px 8px;
+      font: inherit;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 2px 2px 0 var(--ink);
+    }
+
+    button:active {
+      transform: translate(2px, 2px);
+      box-shadow: none;
+    }
+
+    .formula {
+      margin: 0;
+      padding: 10px;
+      border: 2px solid var(--blue);
+      background: var(--blue-soft);
+      font-family: Georgia, serif;
+      font-size: 26px;
+      text-align: center;
+      font-style: italic;
+    }
+
+    .readout {
+      display: grid;
+      gap: 8px;
+    }
+
+    .metric {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 8px;
+      border: 2px solid var(--line);
+      background: #fff;
+      font-weight: 900;
+    }
+
+    .metric span:last-child {
+      color: var(--purple);
+      text-align: right;
+    }
+
+    .coord-list {
+      display: grid;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .coord-row {
+      display: grid;
+      grid-template-columns: 72px 1fr 1fr;
+      gap: 8px;
+      align-items: center;
+      padding: 7px 8px;
+      border: 2px solid var(--line);
+      background: #fff;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .coord-row span:first-child {
+      color: var(--blue);
+    }
+
+    .coord-row label {
+      gap: 2px;
+      font-size: 12px;
+    }
+
+    .coord-row input {
+      min-width: 0;
+      padding: 6px;
+      font-size: 13px;
+    }
+
+    .hint {
+      margin: 10px 0 0;
+      font-size: 13px;
+      line-height: 1.35;
+      font-weight: 700;
+    }
+
+    .legend {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .toggle-row {
+      display: grid;
+      gap: 8px;
+    }
+
+    .toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px;
+      border: 2px solid var(--line);
+      background: #fff;
+      font-weight: 900;
+    }
+
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--green);
+    }
+
+    .author {
+      display: grid;
+      gap: 4px;
+      border-top: 3px solid var(--line);
+      background: #f3ffe9;
+      padding: 12px 14px;
+      color: var(--green);
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .author small {
+      color: var(--ink);
+      font-weight: 800;
+    }
+
+    @media (max-width: 920px) {
+      .app {
+        padding: 8px;
+      }
+
+      main {
+        grid-template-columns: 1fr;
+      }
+
+      canvas {
+        min-height: 560px;
+      }
+
+      .controls {
+        max-height: none;
+      }
+
+      h1 {
+        font-size: clamp(30px, 12vw, 48px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="ribbon"><span>CAPITULO 21</span></div>
+      <h1>Campo Electrico I</h1>
+      <p class="subtitle">Distribuciones discretas de carga - simulacion activa</p>
+      <div class="author">
+        <span>Autor: Profesor Wong. Om Sai Ram JRW</span>
+        <small>Archivo HTML autonomo para navegador de celular, tablet o PC. Todos los derechos reservados.</small>
+      </div>
+    </header>
+
+    <main>
+      <section class="board-wrap" aria-label="Simulador interactivo">
+        <canvas id="field" width="1000" height="720"></canvas>
+        <div class="badge">
+          <span class="badge-number">4</span>
+          <span>Superposicion de fuerzas</span>
+        </div>
+      </section>
+
+      <aside class="controls">
+        <section class="section">
+          <h2 class="section-title"><b>3</b>Ley de Coulomb</h2>
+          <p class="formula">F = k |q1 q2| / r²</p>
+          <p class="hint">Arrastra las cargas en el tablero. Cambia su valor en microcoulombs y observa como se actualizan el campo electrico y la fuerza sobre la carga de prueba.</p>
+          <div class="legend">
+            <span class="legend-item"><span class="dot positive">+</span>Carga +</span>
+            <span class="legend-item"><span class="dot negative">-</span>Carga -</span>
+            <span class="legend-item"><span class="dot test">t</span>Prueba</span>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title"><b>1</b>Cargas</h2>
+          <div class="charge-list" id="chargeList"></div>
+          <div class="toolbar" style="margin-top: 10px;">
+            <button id="addPositive" type="button">+ agregar</button>
+            <button id="addNegative" type="button">- agregar</button>
+            <button id="reset" type="button">reiniciar</button>
+            <button id="remove" type="button">quitar ultima</button>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title"><b>5</b>Campo electrico</h2>
+          <div class="grid-2">
+            <label>
+              q prueba (uC)
+              <input id="testCharge" type="number" min="-10" max="10" step="0.1" value="1">
+            </label>
+            <label>
+              masa (mg)
+              <input id="mass" type="number" min="0.1" max="1000" step="0.1" value="50">
+            </label>
+          </div>
+          <div class="toggle-row" style="margin-top: 10px;">
+            <label class="toggle">Lineas de campo <input id="showLines" type="checkbox" checked></label>
+            <label class="toggle">Vectores de campo <input id="showVectors" type="checkbox" checked></label>
+            <label class="toggle">Trayectoria de prueba <input id="showPath" type="checkbox" checked></label>
+            <label class="toggle">Fondo cuadriculado <input id="showGrid" type="checkbox" checked></label>
+            <label class="toggle">Ver coordenadas <input id="showCoords" type="checkbox" checked></label>
+          </div>
+        </section>
+
+        <section class="section" id="coordSection">
+          <h2 class="section-title"><b>2</b>Coordenadas</h2>
+          <div class="coord-list" id="coordList"></div>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title"><b>7</b>Resultados</h2>
+          <div class="readout">
+            <div class="metric"><span>E resultante</span><span id="eMag">0 N/C</span></div>
+            <div class="metric"><span>Ex</span><span id="ex">0</span></div>
+            <div class="metric"><span>Ey</span><span id="ey">0</span></div>
+            <div class="metric"><span>F = qE</span><span id="fMag">0 N</span></div>
+            <div class="metric"><span>a = qE/m</span><span id="accel">0 m/s²</span></div>
+            <div class="metric"><span>Direccion</span><span id="angle">0°</span></div>
+          </div>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("field");
+    const ctx = canvas.getContext("2d");
+    const chargeList = document.getElementById("chargeList");
+    const k = 8.9875517923e9;
+    const metersPerPixel = 0.01;
+    const minRadius = 20;
+    let activeId = null;
+    let dragOffset = { x: 0, y: 0 };
+    let selectedId = 1;
+
+    const state = {
+      charges: [],
+      test: { id: "test", x: 650, y: 390, q: 1 },
+      showLines: true,
+      showVectors: true,
+      showPath: true,
+      showGrid: true,
+      showCoords: true
+    };
+
+    const initialCharges = [
+      { id: 1, x: 320, y: 300, q: 4 },
+      { id: 2, x: 560, y: 300, q: -3 },
+      { id: 3, x: 430, y: 500, q: -2 }
+    ];
+
+    function resetState() {
+      state.charges = initialCharges.map(charge => ({ ...charge }));
+      state.test = { id: "test", x: 690, y: 410, q: Number(document.getElementById("testCharge").value) || 1 };
+      selectedId = 1;
+      renderControls();
+      draw();
+    }
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      const scale = window.devicePixelRatio || 1;
+      canvas.width = Math.max(640, Math.floor(rect.width * scale));
+      canvas.height = Math.max(520, Math.floor(rect.height * scale));
+      ctx.setTransform(scale, 0, 0, scale, 0, 0);
+      draw();
+    }
+
+    function cssSize() {
+      return {
+        w: canvas.width / (window.devicePixelRatio || 1),
+        h: canvas.height / (window.devicePixelRatio || 1)
+      };
+    }
+
+    function chargeColor(q) {
+      return q >= 0 ? "#e43622" : "#0f55aa";
+    }
+
+    function softColor(q) {
+      return q >= 0 ? "rgba(228, 54, 34, 0.15)" : "rgba(15, 85, 170, 0.15)";
+    }
+
+    function fieldAt(x, y, includeTest = false) {
+      const sources = includeTest ? [...state.charges, state.test] : state.charges;
+      let ex = 0;
+      let ey = 0;
+      for (const charge of sources) {
+        const dxPx = x - charge.x;
+        const dyPx = y - charge.y;
+        const rPx = Math.max(Math.hypot(dxPx, dyPx), minRadius);
+        const rMeters = rPx * metersPerPixel;
+        const qC = charge.q * 1e-6;
+        const e = k * qC / (rMeters * rMeters);
+        ex += e * dxPx / rPx;
+        ey += e * dyPx / rPx;
+      }
+      return { ex, ey, mag: Math.hypot(ex, ey), angle: Math.atan2(ey, ex) };
+    }
+
+    function forceOnTest() {
+      const e = fieldAt(state.test.x, state.test.y);
+      const qC = state.test.q * 1e-6;
+      const fx = qC * e.ex;
+      const fy = qC * e.ey;
+      return { ...e, fx, fy, fmag: Math.hypot(fx, fy) };
+    }
+
+    function formatSci(value, unit) {
+      if (!Number.isFinite(value)) return "0 " + unit;
+      if (Math.abs(value) < 0.001) return "0 " + unit;
+      return value.toExponential(2).replace("e+", " x10^") + " " + unit;
+    }
+
+    function updateReadout() {
+      const result = forceOnTest();
+      const massKg = Math.max(0.0000001, (Number(document.getElementById("mass").value) || 50) * 1e-6);
+      const angleDeg = (result.angle * 180 / Math.PI + 360) % 360;
+      document.getElementById("eMag").textContent = formatSci(result.mag, "N/C");
+      document.getElementById("ex").textContent = formatSci(result.ex, "N/C");
+      document.getElementById("ey").textContent = formatSci(result.ey, "N/C");
+      document.getElementById("fMag").textContent = formatSci(result.fmag, "N");
+      document.getElementById("accel").textContent = formatSci(result.fmag / massKg, "m/s2");
+      document.getElementById("angle").textContent = angleDeg.toFixed(1) + "°";
+      updateCoordinates();
+    }
+
+    function updateCoordinates() {
+      const coordSection = document.getElementById("coordSection");
+      const coordList = document.getElementById("coordList");
+      coordSection.style.display = state.showCoords ? "block" : "none";
+      if (!state.showCoords) return;
+      const rows = [
+        ...state.charges.map(charge => ({
+          label: "Carga " + charge.id,
+          id: charge.id,
+          x: charge.x,
+          y: charge.y
+        })),
+        {
+          label: "Prueba",
+          id: "test",
+          x: state.test.x,
+          y: state.test.y
+        }
+      ];
+      coordList.innerHTML = rows.map(row => `
+        <div class="coord-row">
+          <span>${row.label}</span>
+          <label>x px
+            <input type="number" inputmode="decimal" step="1" value="${row.x.toFixed(0)}" data-id="${row.id}" data-axis="x">
+          </label>
+          <label>y px
+            <input type="number" inputmode="decimal" step="1" value="${row.y.toFixed(0)}" data-id="${row.id}" data-axis="y">
+          </label>
+        </div>
+      `).join("");
+    }
+
+    function clampCoordinate(axis, value) {
+      const { w, h } = cssSize();
+      const min = axis === "x" ? 34 : 70;
+      const max = axis === "x" ? w - 34 : h - 34;
+      return Math.min(max, Math.max(min, Number(value) || min));
+    }
+
+    function applyCoordinateInput(input) {
+      const id = input.dataset.id;
+      const axis = input.dataset.axis;
+      const obj = id === "test" ? state.test : state.charges.find(charge => String(charge.id) === id);
+      if (!obj || (axis !== "x" && axis !== "y")) return;
+      obj[axis] = clampCoordinate(axis, input.value);
+      input.value = obj[axis].toFixed(0);
+      selectedId = obj.id;
+      draw();
+    }
+
+    function renderControls() {
+      chargeList.innerHTML = "";
+      for (const charge of state.charges) {
+        const card = document.createElement("div");
+        card.className = "charge-card";
+        card.innerHTML = `
+          <div class="charge-head">
+            <span><span class="dot ${charge.q >= 0 ? "positive" : "negative"}">${charge.q >= 0 ? "+" : "-"}</span> Carga ${charge.id}</span>
+            <span>${charge.q.toFixed(1)} uC</span>
+          </div>
+          <label>
+            Valor de q
+            <input type="range" min="-8" max="8" step="0.1" value="${charge.q}" data-id="${charge.id}">
+          </label>
+        `;
+        card.addEventListener("click", () => {
+          selectedId = charge.id;
+          draw();
+        });
+        chargeList.appendChild(card);
+      }
+
+      chargeList.querySelectorAll("input[type='range']").forEach(input => {
+        input.addEventListener("input", event => {
+          const id = Number(event.target.dataset.id);
+          const charge = state.charges.find(item => item.id === id);
+          charge.q = Number(event.target.value);
+          renderControls();
+          draw();
+        });
+      });
+    }
+
+    function drawArrow(x1, y1, x2, y2, color, width = 2, head = 8) {
+      const angle = Math.atan2(y2 - y1, x2 - x1);
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineWidth = width;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x2, y2);
+      ctx.lineTo(x2 - head * Math.cos(angle - Math.PI / 6), y2 - head * Math.sin(angle - Math.PI / 6));
+      ctx.lineTo(x2 - head * Math.cos(angle + Math.PI / 6), y2 - head * Math.sin(angle + Math.PI / 6));
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawVectorGrid(w, h) {
+      const gap = Math.max(58, Math.min(86, w / 11));
+      for (let y = 82; y < h - 38; y += gap) {
+        for (let x = 58; x < w - 38; x += gap) {
+          const e = fieldAt(x, y);
+          const strength = Math.min(1, Math.log10(e.mag + 1) / 8);
+          const len = 10 + strength * 26;
+          const color = e.ex >= 0 ? "rgba(15, 85, 170, 0.78)" : "rgba(107, 35, 142, 0.78)";
+          drawArrow(x - Math.cos(e.angle) * len / 2, y - Math.sin(e.angle) * len / 2, x + Math.cos(e.angle) * len / 2, y + Math.sin(e.angle) * len / 2, color, 1.5, 6);
+        }
+      }
+    }
+
+    function drawFieldLines() {
+      for (const charge of state.charges) {
+        const directions = 16;
+        for (let i = 0; i < directions; i++) {
+          const base = (Math.PI * 2 * i) / directions;
+          traceLine(charge.x + Math.cos(base) * 24, charge.y + Math.sin(base) * 24, charge.q >= 0 ? 1 : -1, chargeColor(charge.q));
+        }
+      }
+    }
+
+    function traceLine(x, y, dir, color) {
+      const { w, h } = cssSize();
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.globalAlpha = 0.55;
+      ctx.lineWidth = 1.3;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      let arrowPoint = null;
+      for (let step = 0; step < 160; step++) {
+        const e = fieldAt(x, y);
+        if (e.mag < 1) break;
+        const angle = e.angle + (dir < 0 ? Math.PI : 0);
+        x += Math.cos(angle) * 7;
+        y += Math.sin(angle) * 7;
+        ctx.lineTo(x, y);
+        if (step === 22) arrowPoint = { x, y, angle };
+        if (x < 0 || x > w || y < 0 || y > h) break;
+        if (state.charges.some(charge => Math.hypot(x - charge.x, y - charge.y) < 18)) break;
+      }
+      ctx.stroke();
+      if (arrowPoint) {
+        ctx.globalAlpha = 0.9;
+        const a = arrowPoint.angle;
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(arrowPoint.x, arrowPoint.y);
+        ctx.lineTo(arrowPoint.x - 8 * Math.cos(a - Math.PI / 6), arrowPoint.y - 8 * Math.sin(a - Math.PI / 6));
+        ctx.lineTo(arrowPoint.x - 8 * Math.cos(a + Math.PI / 6), arrowPoint.y - 8 * Math.sin(a + Math.PI / 6));
+        ctx.closePath();
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    function drawPath() {
+      const qSign = Math.sign(state.test.q) || 1;
+      let x = state.test.x;
+      let y = state.test.y;
+      let vx = 0;
+      let vy = 0;
+      const massKg = Math.max(0.0000001, (Number(document.getElementById("mass").value) || 50) * 1e-6);
+      ctx.save();
+      ctx.strokeStyle = "rgba(18, 18, 18, 0.75)";
+      ctx.setLineDash([7, 6]);
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      for (let i = 0; i < 90; i++) {
+        const e = fieldAt(x, y);
+        const ax = (qSign * Math.min(Math.abs(state.test.q), 10) * 1e-6 * e.ex) / massKg;
+        const ay = (qSign * Math.min(Math.abs(state.test.q), 10) * 1e-6 * e.ey) / massKg;
+        vx += ax * 0.0000008;
+        vy += ay * 0.0000008;
+        x += vx * 0.018;
+        y += vy * 0.018;
+        ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = varColor("--red");
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function varColor(name) {
+      return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    }
+
+    function drawCharge(charge, isTest = false) {
+      const r = isTest ? 20 : 26;
+      const gradient = ctx.createRadialGradient(charge.x - r / 3, charge.y - r / 3, 4, charge.x, charge.y, r);
+      gradient.addColorStop(0, "#ffffff");
+      gradient.addColorStop(0.2, softColor(charge.q));
+      gradient.addColorStop(1, isTest ? varColor("--green") : chargeColor(charge.q));
+      ctx.save();
+      ctx.shadowColor = "rgba(0,0,0,0.28)";
+      ctx.shadowBlur = 8;
+      ctx.shadowOffsetY = 3;
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(charge.x, charge.y, r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowColor = "transparent";
+      ctx.lineWidth = selectedId === charge.id ? 4 : 2.5;
+      ctx.strokeStyle = selectedId === charge.id ? varColor("--yellow") : varColor("--line");
+      ctx.stroke();
+      ctx.fillStyle = "#fff";
+      ctx.strokeStyle = "rgba(0,0,0,0.35)";
+      ctx.lineWidth = 1;
+      ctx.font = "900 28px Trebuchet MS";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      const text = isTest ? "t" : charge.q >= 0 ? "+" : "-";
+      ctx.strokeText(text, charge.x, charge.y + 1);
+      ctx.fillText(text, charge.x, charge.y + 1);
+      ctx.fillStyle = varColor("--ink");
+      ctx.font = "900 13px Trebuchet MS";
+      ctx.fillText(isTest ? "prueba" : charge.q.toFixed(1) + " uC", charge.x, charge.y + r + 16);
+      if (state.showCoords) {
+        ctx.fillStyle = isTest ? varColor("--green") : chargeColor(charge.q);
+        ctx.font = "900 12px Trebuchet MS";
+        ctx.fillText("(" + charge.x.toFixed(0) + ", " + charge.y.toFixed(0) + ")", charge.x, charge.y + r + 31);
+      }
+      ctx.restore();
+    }
+
+    function drawResultant() {
+      const r = forceOnTest();
+      const eLen = Math.min(110, 18 + Math.log10(r.mag + 1) * 13);
+      const fLen = Math.min(130, 18 + Math.log10(r.fmag * 1e7 + 1) * 26);
+      drawArrow(state.test.x, state.test.y, state.test.x + Math.cos(r.angle) * eLen, state.test.y + Math.sin(r.angle) * eLen, varColor("--green"), 4, 12);
+      const fAngle = Math.atan2(r.fy, r.fx);
+      drawArrow(state.test.x, state.test.y, state.test.x + Math.cos(fAngle) * fLen, state.test.y + Math.sin(fAngle) * fLen, varColor("--purple"), 4, 12);
+      ctx.save();
+      ctx.font = "900 15px Trebuchet MS";
+      ctx.fillStyle = varColor("--green");
+      ctx.fillText("E", state.test.x + Math.cos(r.angle) * eLen + 12, state.test.y + Math.sin(r.angle) * eLen);
+      ctx.fillStyle = varColor("--purple");
+      ctx.fillText("F", state.test.x + Math.cos(fAngle) * fLen + 12, state.test.y + Math.sin(fAngle) * fLen);
+      ctx.restore();
+    }
+
+    function draw() {
+      const { w, h } = cssSize();
+      canvas.classList.toggle("no-grid", !state.showGrid);
+      ctx.clearRect(0, 0, w, h);
+      ctx.save();
+      ctx.fillStyle = "rgba(255,253,245,0.78)";
+      ctx.fillRect(0, 0, w, h);
+      ctx.restore();
+
+      if (state.showVectors) drawVectorGrid(w, h);
+      if (state.showLines) drawFieldLines();
+      if (state.showPath) drawPath();
+
+      for (const charge of state.charges) drawCharge(charge);
+      drawCharge(state.test, true);
+      drawResultant();
+      updateReadout();
+    }
+
+    function pointerPosition(event) {
+      const rect = canvas.getBoundingClientRect();
+      return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+    }
+
+    function nearestObject(x, y) {
+      const objects = [...state.charges, state.test];
+      return objects.find(obj => Math.hypot(x - obj.x, y - obj.y) <= 32);
+    }
+
+    canvas.addEventListener("pointerdown", event => {
+      const pos = pointerPosition(event);
+      const obj = nearestObject(pos.x, pos.y);
+      if (!obj) return;
+      activeId = obj.id;
+      selectedId = obj.id;
+      dragOffset = { x: pos.x - obj.x, y: pos.y - obj.y };
+      canvas.setPointerCapture(event.pointerId);
+      draw();
+    });
+
+    canvas.addEventListener("pointermove", event => {
+      if (activeId === null) return;
+      const pos = pointerPosition(event);
+      const obj = activeId === "test" ? state.test : state.charges.find(charge => charge.id === activeId);
+      const { w, h } = cssSize();
+      obj.x = Math.min(w - 34, Math.max(34, pos.x - dragOffset.x));
+      obj.y = Math.min(h - 34, Math.max(70, pos.y - dragOffset.y));
+      draw();
+    });
+
+    canvas.addEventListener("pointerup", event => {
+      activeId = null;
+      canvas.releasePointerCapture(event.pointerId);
+    });
+
+    document.getElementById("addPositive").addEventListener("click", () => {
+      const id = Math.max(0, ...state.charges.map(charge => charge.id)) + 1;
+      state.charges.push({ id, x: 220 + id * 28, y: 230 + id * 18, q: 2 });
+      selectedId = id;
+      renderControls();
+      draw();
+    });
+
+    document.getElementById("addNegative").addEventListener("click", () => {
+      const id = Math.max(0, ...state.charges.map(charge => charge.id)) + 1;
+      state.charges.push({ id, x: 240 + id * 28, y: 260 + id * 18, q: -2 });
+      selectedId = id;
+      renderControls();
+      draw();
+    });
+
+    document.getElementById("remove").addEventListener("click", () => {
+      state.charges.pop();
+      selectedId = state.charges[0]?.id || "test";
+      renderControls();
+      draw();
+    });
+
+    document.getElementById("reset").addEventListener("click", resetState);
+    document.getElementById("testCharge").addEventListener("input", event => {
+      state.test.q = Number(event.target.value) || 0;
+      draw();
+    });
+    document.getElementById("mass").addEventListener("input", draw);
+    document.getElementById("showLines").addEventListener("change", event => {
+      state.showLines = event.target.checked;
+      draw();
+    });
+    document.getElementById("showVectors").addEventListener("change", event => {
+      state.showVectors = event.target.checked;
+      draw();
+    });
+    document.getElementById("showPath").addEventListener("change", event => {
+      state.showPath = event.target.checked;
+      draw();
+    });
+    document.getElementById("showGrid").addEventListener("change", event => {
+      state.showGrid = event.target.checked;
+      draw();
+    });
+    document.getElementById("showCoords").addEventListener("change", event => {
+      state.showCoords = event.target.checked;
+      draw();
+    });
+    document.getElementById("coordList").addEventListener("change", event => {
+      if (event.target.matches("input[data-axis]")) applyCoordinateInput(event.target);
+    });
+    document.getElementById("coordList").addEventListener("keydown", event => {
+      if (event.key === "Enter" && event.target.matches("input[data-axis]")) {
+        event.preventDefault();
+        applyCoordinateInput(event.target);
+        event.target.blur();
+      }
+    });
+
+    window.addEventListener("resize", resizeCanvas);
+    resetState();
+    resizeCanvas();
+  </script>
+</body>
+</html>

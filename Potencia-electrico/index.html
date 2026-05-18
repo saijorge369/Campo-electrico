@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="author" content="Profesor Wong - Om Sai Ram JRW" />
+<meta name="robots" content="index,follow,noarchive" />
+<title>Potencia Eléctrico - Simulación Interactiva</title>
+<style>
+:root{--bg:#f7f5ed;--panel:#fffdf5;--ink:#141414;--accent:#255aa8;--line:#222;--muted:#667;--good:#167a2f;--bad:#b71c1c;--edge:#111;--eq:#28a745;--field:#2767bf}
+body.dark{--bg:#06101a;--panel:#0b1d2b;--ink:#eaf8ff;--accent:#58a6ff;--line:#85b6ff;--muted:#bdd1df;--edge:#f0f0f0;--eq:#60ff66;--field:#ffcf33}
+body.white{--bg:#fff;--panel:#fff;--ink:#111;--accent:#1b4e9b;--line:#111;--muted:#555;--edge:#000;--eq:#1c8c3a;--field:#1b4e9b}
+body.paper{--bg:#efe1bd;--panel:#fff4cf;--ink:#2b1a0b;--accent:#8a4b00;--line:#3a260b;--muted:#6b5540;--edge:#2b1a0b;--eq:#497e33;--field:#8a4b00}
+body.wong{--bg:#02070d;--panel:#071523;--ink:#e9f9ff;--accent:#ffe600;--line:#1b76a8;--muted:#9ed9ee;--edge:#f4f7fb;--eq:#47ff56;--field:#ffcf00}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,Helvetica,sans-serif}.app{max-width:1600px;margin:auto;padding:8px}.header{border:3px solid var(--line);background:var(--panel);padding:10px 14px;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}.header h1{margin:0;font-size:22px;color:var(--accent);text-transform:uppercase}.header small{display:block;margin-top:3px;color:var(--muted)}.copyright{text-align:right;font-size:13px}.toolbar{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.btn,select,input{border:2px solid var(--line);background:var(--panel);color:var(--ink);padding:7px 9px;border-radius:4px;font-weight:700}.btn{cursor:pointer}.btn.on{background:#16842b;color:white}.btn.off{background:#555;color:white}.grid{display:grid;grid-template-columns:minmax(230px,310px) 1fr minmax(250px,340px);gap:8px}.panel{background:var(--panel);border:3px solid var(--line);padding:8px;min-width:0;overflow:hidden}.panel h2{font-size:16px;margin:0 0 8px;color:var(--accent);display:flex;align-items:center;gap:6px}.badge{background:var(--accent);color:white;border-radius:4px;padding:4px 8px}.figureGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}.figbtn{border:2px solid var(--line);background:transparent;color:var(--ink);padding:8px 5px;min-height:42px;font-size:12px;cursor:pointer}.figbtn.active{background:var(--accent);color:white}.row{display:grid;grid-template-columns:1fr 90px;gap:6px;align-items:center;margin:6px 0}.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}.row input,.row select{width:100%;min-width:0}.canvasWrap{position:relative;border:3px solid var(--line);background:#fff;min-height:620px;overflow:hidden}body.dark .canvasWrap{background:#03070b}#cv{width:100%;height:100%;display:block;touch-action:none}.legend{position:absolute;right:10px;top:10px;background:rgba(255,255,255,.88);color:#111;border:2px solid #222;padding:8px;font-size:12px;border-radius:4px;max-width:260px}.legend{display:none!important}.legend.hide{display:none}.infoBox{display:none;position:absolute;left:10px;top:10px;background:rgba(255,255,255,.95);color:#111;border:2px solid #222;padding:10px;border-radius:4px;max-width:360px;font-size:13px}.infoBox.show{display:block}.readout{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);background:rgba(255,255,255,.88);color:#111;border:2px solid #222;padding:6px 12px;border-radius:4px;font-weight:bold}.result{border:2px solid var(--line);padding:7px;margin:5px 0;display:flex;justify-content:space-between;gap:8px}.result b{color:#5b1a92}.warn{font-size:12px;color:var(--muted);line-height:1.25}.formula{border:2px solid var(--line);padding:8px;margin-top:8px;font-size:13px;background:rgba(255,255,255,.35);white-space:normal;overflow-wrap:anywhere}.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:20;align-items:center;justify-content:center;padding:10px}.modal.show{display:flex}.modalContent{background:var(--panel);color:var(--ink);border:3px solid var(--line);max-width:850px;max-height:85vh;overflow:auto;padding:14px}.modalContent pre{white-space:pre-wrap}.small{font-size:12px}.adminOnly{display:none}body.admin .adminOnly{display:block}@media(max-width:1000px){.grid{grid-template-columns:1fr}.canvasWrap{min-height:560px}.copyright{text-align:left}.header{grid-template-columns:1fr}.figureGrid{grid-template-columns:repeat(3,1fr)}}@media(max-width:600px){.figureGrid{grid-template-columns:repeat(2,1fr)}.toolbar .btn,.toolbar select{font-size:12px;padding:6px}.canvasWrap{min-height:480px}.header h1{font-size:17px}.row{grid-template-columns:1fr}.legend{position:static;margin:6px}.readout{font-size:12px;left:8px;right:8px;transform:none;text-align:center}}
+body.wong .app{max-width:1680px;background:radial-gradient(circle at 50% 30%,rgba(18,113,143,.18),transparent 34%),linear-gradient(180deg,#02060d,#061320);min-height:100vh}
+body.wong .header,body.wong .panel,body.wong .toolbar,body.wong .canvasWrap{box-shadow:0 0 0 1px rgba(95,208,255,.16),0 0 22px rgba(21,128,184,.2)}
+body.wong .header{border-radius:6px;background:linear-gradient(90deg,#06101d,#0b2135 55%,#06101d)}
+body.wong .header h1{color:#ffe600;text-shadow:0 0 12px rgba(255,230,0,.35)}
+body.wong .toolbar{border:2px solid var(--line);padding:6px;background:rgba(7,21,35,.86);border-radius:6px}
+body.wong .btn.on{background:linear-gradient(#23a33a,#087918)}body.wong .btn.off{background:#182434}
+body.wong .canvasWrap{background:#02070d;border-radius:6px}body.wong .panel{border-radius:6px;background:rgba(7,21,35,.92)}
+body.wong .readout,body.wong .infoBox{background:rgba(2,8,13,.88);color:#e9f9ff;border-color:#1b76a8}
+.copyShield{position:fixed;right:12px;bottom:10px;z-index:30;pointer-events:none;color:rgba(233,249,255,.55);font-size:11px;font-weight:700;text-align:right;line-height:1.25;text-shadow:0 1px 3px #000}
+.copyNotice{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:40;background:rgba(2,8,13,.94);color:#e9f9ff;border:2px solid #1b76a8;padding:9px 14px;border-radius:6px;font-weight:700;box-shadow:0 0 18px rgba(27,118,168,.32);opacity:0;transition:opacity .18s}
+.copyNotice.show{opacity:1}
+body.protected,body.protected canvas,body.protected .panel,body.protected .toolbar{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+body.protected input,body.protected select,body.protected textarea{-webkit-user-select:auto;user-select:auto}
+@media print{.toolbar,.left,.right,.legend,.infoBox{display:none!important}.grid{display:block}.canvasWrap{border:2px solid #000;height:680px}.header{border:2px solid #000}.app{max-width:none}.formula{page-break-inside:avoid}}
+</style>
+</head>
+<body class="protected">
+<div class="app">
+<header class="header"><div><h1>Potencia Eléctrico</h1><small>Capítulo 23 · cargas puntuales · potencial, energía, campo E y superficies equipotenciales · simulación 2D/3D</small></div><div class="copyright"><b>Autor:</b> Profesor Wong · Om Sai Ram JRW<br>© Copyright · Uso educativo</div></header>
+<div class="toolbar">
+<button id="infoBtn" class="btn">ⓘ Información</button><select id="theme"><option value="wong">Template Prof. Wong</option><option value="">Base claro</option><option value="dark">Oscuro moderno</option><option value="white">Blanco impresión</option><option value="paper">Papel antiguo</option></select>
+<button id="textBtn" class="btn on">Texto ON</button><button id="edgeBtn" class="btn on">Unir cargas ON</button><button id="fieldBtn" class="btn on">E ON</button><button id="eqBtn" class="btn on">Sup. Eq ON</button><button id="pBtn" class="btn on">P ON</button><button id="onlyE" class="btn">Solo E</button><button id="onlyEq" class="btn">Solo Eq</button><button id="animBtn" class="btn">Animar</button><button id="printBtn" class="btn">Imprimir</button><button id="adminBtn" class="btn">Admin</button>
+</div>
+<div class="grid">
+<aside class="panel left"><h2><span class="badge">1</span> Figuras</h2><select id="group"><option value="platonic">Sólidos platónicos</option><option value="special">Especiales / cascarones</option><option value="plane">Figuras 2D</option><option value="atoms">Átomos básicos</option></select><div id="figures" class="figureGrid"></div><div class="row"><label>Número de cargas</label><input id="nCharges" type="number" min="4" max="80" value="20"></div><div class="row"><label>Lado / radio base (cm)</label><input id="sizeCm" type="number" value="10" step="1"></div><div class="row"><label>Patrón de carga</label><select id="chargePattern">
+<option value="allPlus">Todas +Q</option>
+<option value="allMinus">Todas −Q</option>
+<option value="hemisphereDipole">Mitad superior +Q / mitad inferior −Q</option>
+<option value="upperPlusOnly">Solo mitad superior +Q</option>
+<option value="lowerMinusOnly">Solo mitad inferior −Q</option>
+<option value="balancedPairs">+ y − balanceadas por pares simétricos (E centro≈0)</option>
+<option value="alternating">Alternadas + −</option>
+</select></div><div class="row"><label>Q de cada carga (µC)</label><input id="qVal" type="number" value="1" step="0.1"></div><div class="warn">Merkaba = dos tetraedros regulares interpenetrados (stella octangula). Esfera, huevo/ovoide y sólidos permiten: todas +, todas −, mitad +/−, solo media estructura cargada y pares +/− balanceados para que en el centro se anule por simetría.</div></aside>
+<main class="canvasWrap"><canvas id="cv"></canvas><div id="legend" class="legend"><b>Leyenda</b><br>Rojo: +Q · Azul: −Q · Verde: P<br>Negro punteado: aristas/uniones<br>Amarillo/Azul: líneas y vectores de campo E<br>Verde: curvas/superficies equipotenciales<br><br>Arrastra: rotar 360° · rueda/pellizco: zoom · Shift+clic: mover P</div><div id="infoBox" class="infoBox"><b>Controles de simulación</b><br>• Rotar: arrastre con mouse o dedo.<br>• Zoom: rueda del mouse o pellizco.<br>• P: Shift+clic o coordenadas del panel derecho.<br>• ON/OFF: aparece y desaparece de inmediato.<br>• En 3D se dibuja una sección visible de equipotenciales; al rotar se recalcula con la vista actual.
+• Las líneas de E se siembran ahora de forma simétrica alrededor de todas las cargas, no solo desde la primera mitad.<br>• Para evitar confusión, use “Solo E” o “Solo Eq”.<br>• En “pares simétricos” cada punto y su opuesto llevan el mismo signo; por eso E en el centro se cancela por simetría. En “mitad +/−” se ve el comportamiento tipo dipolo.</div><div id="readout" class="readout">P: x=0 cm · y=0 cm · z=0 cm</div></main>
+<aside class="panel right"><h2><span class="badge">2</span> Punto P</h2><div class="row"><label>Modo rápido de P</label><select id="pMode"><option value="center">Centro de la estructura</option><option value="free">Coordenadas libres</option><option value="faceCenter">Centro de una cara</option><option value="faceNormal">Perpendicular a una cara, distancia h</option><option value="onCharge">Sobre una carga q#</option><option value="radialCharge">Radial desde una carga q#, distancia d</option></select></div><div class="row3"><input id="px" type="number" value="0" step="1"><input id="py" type="number" value="0" step="1"><input id="pz" type="number" value="0" step="1"></div><button id="goP" class="btn">Ir a P / aplicar modo</button><div class="row"><label>q# para P</label><input id="pOnQ" type="number" value="1" min="1"></div><div class="row"><label>Cara / eje</label><select id="face"><option value="z+">+Z superior</option><option value="z-">−Z inferior</option><option value="x+">+X derecha</option><option value="x-">−X izquierda</option><option value="y+">+Y frontal</option><option value="y-">−Y posterior</option></select></div><div class="row"><label>Altura h o distancia radial d (cm)</label><input id="hFace" type="number" value="10" step="1" min="1" max="100"></div><button id="goFace" class="btn">P sobre/bajo cara</button><button id="goQ" class="btn">P en q#</button><button id="goRadial" class="btn">P radial desde q#</button><h2><span class="badge">3</span> Resultados</h2><div class="result"><span>V(P)</span><b id="vOut">0 V</b></div><div class="result"><span>|E(P)|</span><b id="eOut">0 N/C</b></div><div class="result"><span>U sistema</span><b id="uOut">0 J</b></div><div class="row"><label>q₀ prueba (µC)</label><input id="q0" type="number" value="1" step="0.1"></div><div class="result"><span>U=q₀V</span><b id="uqOut">0 J</b></div><div class="result"><span>|F|=|q₀E|</span><b id="fOut">0 N</b></div><button id="calcBtn" class="btn">Ver cálculo paso a paso</button><div class="formula" id="formulaBox"></div><div class="adminOnly"><h2><span class="badge">A</span> Admin</h2><button id="solutionBtn" class="btn">Hoja solución</button></div></aside>
+</div>
+</div>
+<div class="copyShield">Profesor Wong · Om Sai Ram JRW<br>Simulación educativa protegida</div>
+<div id="copyNotice" class="copyNotice">Contenido protegido para uso educativo en línea.</div>
+<div id="modal" class="modal"><div class="modalContent"><button id="closeModal" class="btn">Cerrar</button><div id="modalText"></div></div></div>
+<script>
+const K=8.9875517923e9; let state={shape:'tetra',rotX:-0.4,rotY:0.6,rotZ:0,zoom:34,showText:true,showEdges:true,showField:true,showEq:true,showP:true,anim:false,axis:'y',speed:0.01,p:{x:0,y:0,z:0},charges:[],edges:[]};
+const cv=document.getElementById('cv'), ctx=cv.getContext('2d'); const figs={platonic:[['tetra','Tetraedro'],['cube','Cubo'],['octa','Octaedro'],['dodeca','Dodecaedro'],['icosa','Icosaedro']],special:[['merkaba','Merkaba'],['sphere','Cascarón esférico'],['hemi','Media esfera'],['sphereDipole','Esfera + / −'],['egg','Huevo / ovoide'],['eggDipole','Huevo + / −'],['torus','Toroide'],['chartres','Emisor Chartres / Jeandel Foye']],plane:[['square2d','Cuadrado 2D'],['rect2d','Rectángulo 2D'],['circle2d','Círculo N cargas'],['ellipse2d','Elipse 2D'],['line2d','Línea de cargas']],atoms:[['atomH','Hidrógeno'],['atomHe','Helio'],['atomC','Carbono'],['atomN','Nitrógeno'],['atomO','Oxígeno'],['atomNe','Neón'],['atomNa','Sodio'],['atomCl','Cloro']]};
+document.body.className='protected wong';
+function el(id){return document.getElementById(id)} function cm(){return +el('sizeCm').value||10}
+function baseQ(){return (+el('qVal').value||1)*1e-6}
+function hemiCoord(c){ // decide la mitad por z; si z=0 usa y y luego x
+  if(Math.abs(c.z)>1e-9) return c.z;
+  if(Math.abs(c.y)>1e-9) return c.y;
+  return c.x;
+}
+function assignCharges(pts, pattern, shape){
+  let q=baseQ();
+  if(shape==='sphereDipole'||shape==='eggDipole') pattern='hemisphereDipole';
+
+  // Caso didáctico clave: pares opuestos simétricos.
+  // Cada punto r y su opuesto -r reciben EL MISMO signo. Por tanto, en P=(0,0,0)
+  // el campo E se cancela par a par exactamente por simetría. Se alterna el signo
+  // entre pares para tener mezcla +/− sin romper la cancelación vectorial en el centro.
+  if(pattern==='balancedPairs'){
+    let signs=new Array(pts.length).fill(null), pair=0;
+    for(let i=0;i<pts.length;i++){
+      if(signs[i]!==null) continue;
+      let best=-1, bestD=Infinity;
+      for(let j=i+1;j<pts.length;j++){
+        let d=Math.hypot(pts[i].x+pts[j].x,pts[i].y+pts[j].y,pts[i].z+pts[j].z);
+        if(d<bestD){bestD=d;best=j;}
+      }
+      let sgn=(pair%2===0?1:-1);
+      signs[i]=sgn;
+      if(best>=0 && bestD<1e-6 + cm()*0.08) signs[best]=sgn;
+      pair++;
+    }
+    return pts.map((p,i)=>({...p,q:(p.qFixed!==undefined?p.qFixed*q:q*(signs[i]??1))}));
+  }
+
+  return pts.map((p,i)=>{
+    let sgn=1;
+    if(pattern==='allMinus') sgn=-1;
+    else if(pattern==='alternating') sgn=(i%2===0?1:-1);
+    else if(pattern==='hemisphereDipole') sgn=(hemiCoord(p)>=0?1:-1);
+    else if(pattern==='upperPlusOnly') sgn=(hemiCoord(p)>=0?1:0);
+    else if(pattern==='lowerMinusOnly') sgn=(hemiCoord(p)<=0?-1:0);
+    return {...p,q:(p.qFixed!==undefined?p.qFixed*q:q*sgn)};
+  });
+}
+function initButtons(){renderFigureButtons();['group','nCharges','sizeCm','chargePattern','qVal'].forEach(id=>el(id).oninput=()=>{renderFigureButtons(false);build();draw()});el('group').onchange=()=>{renderFigureButtons(true);build();draw()};el('theme').onchange=()=>document.body.className=(document.body.classList.contains('admin')?'admin ':'')+el('theme').value;toggle('textBtn','showText','Texto');toggle('edgeBtn','showEdges','Unir cargas');toggle('fieldBtn','showField','E');toggle('eqBtn','showEq','Sup. Eq');toggle('pBtn','showP','P');el('onlyE').onclick=()=>{state.showField=true;state.showEq=false;updateBtns();draw()};el('onlyEq').onclick=()=>{state.showField=false;state.showEq=true;updateBtns();draw()};el('infoBtn').onclick=()=>el('infoBox').classList.toggle('show');el('infoBtn').onmouseenter=()=>el('infoBox').classList.add('show');el('infoBtn').onmouseleave=()=>el('infoBox').classList.remove('show');el('printBtn').onclick=()=>window.print();el('adminBtn').onclick=()=>{let u=prompt('Usuario');let p=prompt('Clave');if(u==='admin'&&p==='OmSaiRam1594'){document.body.classList.add('admin');alert('Modo administrador activo')}};el('goP').onclick=()=>{applyPMode();draw()};el('goQ').onclick=()=>{let i=(+el('pOnQ').value||1)-1;if(state.charges[i]){state.p={...state.charges[i]};draw()}};el('goFace').onclick=()=>{placeFace(false);draw()};el('goRadial').onclick=()=>{placeRadial();draw()};el('calcBtn').onclick=showCalc;el('solutionBtn').onclick=showSolution;el('closeModal').onclick=()=>el('modal').classList.remove('show');el('animBtn').onclick=()=>{let ax=prompt('Eje de rotación: x, y, z o xyz','y')||'y';let sp=prompt('Velocidad 1-100','30')||'30';state.axis=ax.toLowerCase();state.speed=(+sp/1000)||.03;state.anim=!state.anim;el('animBtn').textContent=state.anim?'Pausa animación':'Animar';requestAnimationFrame(loop)}}
+function toggle(btn,key,label){el(btn).onclick=()=>{state[key]=!state[key];updateBtns();draw()}} function updateBtns(){[['textBtn','showText','Texto'],['edgeBtn','showEdges','Unir cargas'],['fieldBtn','showField','E'],['eqBtn','showEq','Sup. Eq'],['pBtn','showP','P']].forEach(([b,k,l])=>{el(b).className='btn '+(state[k]?'on':'off');el(b).textContent=l+' '+(state[k]?'ON':'OFF')})}
+
+function applyPMode(){
+  const m=el('pMode').value;
+  if(m==='center'){state.p={x:0,y:0,z:0};return}
+  if(m==='free'){state.p={x:+el('px').value||0,y:+el('py').value||0,z:+el('pz').value||0};return}
+  if(m==='onCharge'){let i=(+el('pOnQ').value||1)-1;if(state.charges[i])state.p={x:state.charges[i].x,y:state.charges[i].y,z:state.charges[i].z};return}
+  if(m==='radialCharge'){placeRadial();return}
+  if(m==='faceCenter'){placeFace(true);return}
+  if(m==='faceNormal'){placeFace(false);return}
+}
+function placeFace(onSurface){let s=cm()/2,h=onSurface?0:(+el('hFace').value||0),f=el('face').value;state.p={x:0,y:0,z:0};if(f[0]=='x')state.p.x=(f[1]=='+'?s+h:-s-h); if(f[0]=='y')state.p.y=(f[1]=='+'?s+h:-s-h); if(f[0]=='z')state.p.z=(f[1]=='+'?s+h:-s-h)}
+function placeRadial(){let i=(+el('pOnQ').value||1)-1,h=Math.max(1,Math.min(100,+el('hFace').value||10));let c=state.charges[i];if(!c)return;let r=Math.hypot(c.x,c.y,c.z)||1;state.p={x:c.x+c.x/r*h,y:c.y+c.y/r*h,z:c.z+c.z/r*h}}
+function renderFigureButtons(reset){let g=el('group').value, cont=el('figures');if(reset)state.shape=figs[g][0][0];cont.innerHTML='';figs[g].forEach(([id,name])=>{let b=document.createElement('button');b.className='figbtn '+(state.shape===id?'active':'');b.textContent=name;b.onclick=()=>{state.shape=id;renderFigureButtons(false);build();draw()};cont.appendChild(b)})}
+function V(x,y,z){let s=0;for(const c of state.charges){if(Math.abs(c.q)<1e-18)continue;let r=Math.hypot(x-c.x,y-c.y,z-c.z); if(r<1e-6) return Infinity; s+=K*c.q/(r/100)}return s}
+function E(x,y,z){let ex=0,ey=0,ez=0;for(const c of state.charges){if(Math.abs(c.q)<1e-18)continue;let dx=x-c.x,dy=y-c.y,dz=z-c.z;let rcm=Math.hypot(dx,dy,dz); if(rcm<1e-6)continue; let rm=rcm/100; let fac=K*c.q/(rm*rm*rm); ex+=fac*(dx/100);ey+=fac*(dy/100);ez+=fac*(dz/100)}
+ // Limpieza numérica: en figuras perfectamente simétricas el resultado físico en el centro debe ser E=0.
+ // JavaScript puede dejar residuos tipo 1e-10 N/C por redondeo; aquí se muestran como cero exacto.
+ let mag=Math.hypot(ex,ey,ez); if(mag<1e-7){ex=0;ey=0;ez=0;mag=0;} return {x:ex,y:ey,z:ez,mag}}
+function U(){let u=0;let terms=[];for(let i=0;i<state.charges.length;i++)for(let j=i+1;j<state.charges.length;j++){let a=state.charges[i],b=state.charges[j]; if(Math.abs(a.q)<1e-18||Math.abs(b.q)<1e-18)continue; let r=Math.hypot(a.x-b.x,a.y-b.y,a.z-b.z)/100; if(r>0){let t=K*a.q*b.q/r;u+=t;terms.push(`k q${i+1}q${j+1}/r${i+1}${j+1}`)}}return {u,terms}}
+function build(){let s=cm(), pts=[], ed=[];const n=Math.max(4,Math.min(80,+el('nCharges').value||20)), pat=el('chargePattern').value;function add(x,y,z){pts.push({x,y,z})}function edge(i,j){ed.push([i,j])}let sh=state.shape;
+ if(sh==='cube'){let a=s/2;[[-a,-a,-a],[a,-a,-a],[a,a,-a],[-a,a,-a],[-a,-a,a],[a,-a,a],[a,a,a],[-a,a,a]].forEach(p=>add(...p));[[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]].forEach(e=>edge(...e))}
+ else if(sh==='tetra'){let R=s*Math.sqrt(6)/4;[[1,1,1],[-1,-1,1],[-1,1,-1],[1,-1,-1]].forEach(p=>add(p[0]*R/Math.sqrt(3),p[1]*R/Math.sqrt(3),p[2]*R/Math.sqrt(3)));[[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]].forEach(e=>edge(...e))}
+ else if(sh==='octa'){let a=s/Math.sqrt(2);[[a,0,0],[-a,0,0],[0,a,0],[0,-a,0],[0,0,a],[0,0,-a]].forEach(p=>add(...p));for(let i=0;i<6;i++)for(let j=i+1;j<6;j++)if(Math.abs(dot([pts[i].x,pts[i].y,pts[i].z],[pts[j].x,pts[j].y,pts[j].z]))<1e-6)edge(i,j)}
+ else if(sh==='icosa'){let phi=(1+Math.sqrt(5))/2, arr=[];[-1,1].forEach(a=>[-phi,phi].forEach(b=>arr.push([0,a,b])));[-1,1].forEach(a=>[-phi,phi].forEach(b=>arr.push([a,b,0])));[-1,1].forEach(a=>[-phi,phi].forEach(b=>arr.push([b,0,a])));let scale=s/2;arr.forEach(p=>add(p[0]*scale,p[1]*scale,p[2]*scale));autoEdges(ed,pts,1.05*s)}
+ else if(sh==='dodeca'){let phi=(1+Math.sqrt(5))/2,a=1/phi,arr=[];[-1,1].forEach(x=>[-1,1].forEach(y=>[-1,1].forEach(z=>arr.push([x,y,z]))));[-1,1].forEach(y=>[-1,1].forEach(z=>arr.push([0,y*a,z*phi])));[-1,1].forEach(x=>[-1,1].forEach(y=>arr.push([x*a,y*phi,0])));[-1,1].forEach(x=>[-1,1].forEach(z=>arr.push([x*phi,0,z*a])));let scale=s/2;arr.forEach(p=>add(p[0]*scale,p[1]*scale,p[2]*scale));autoEdges(ed,pts,0.72*s)}
+ else if(sh==='merkaba'){let R=s*Math.sqrt(6)/4;let up=[[1,1,1],[-1,-1,1],[-1,1,-1],[1,-1,-1]],dn=up.map(p=>[-p[0],-p[1],-p[2]]);up.concat(dn).forEach(p=>add(p[0]*R/Math.sqrt(3),p[1]*R/Math.sqrt(3),p[2]*R/Math.sqrt(3)));[[0,1],[0,2],[0,3],[1,2],[1,3],[2,3],[4,5],[4,6],[4,7],[5,6],[5,7],[6,7]].forEach(e=>edge(...e));}
+ else if(sh.startsWith('atom')){atomShape(sh,s,pts,ed)}
+ else if(sh.includes('sphere')||sh==='hemi'||sh.includes('egg')||sh==='torus'||sh==='chartres'||sh.includes('2d')){specialShape(sh,n,s,pts,ed)}
+ state.charges=assignCharges(pts,pat,sh); state.edges=ed;}
+
+function atomShape(sh,s,pts,ed){
+ function add(x,y,z,q,extra={}){pts.push({x,y,z,qFixed:q,...extra})}
+ function orbit(rad,normal,shell){ed.push({type:'orbit',r:rad,normal,shell})}
+ const Z={atomH:1,atomHe:2,atomC:6,atomN:7,atomO:8,atomNe:10,atomNa:11,atomCl:17}[sh]||1;
+ const shells = Z<=2?[Z]:Z<=10?[2,Z-2]:[2,8,Z-10];
+ add(0,0,0,Z,{atomNucleus:true}); // núcleo positivo didáctico +ZQ
+ let R=s*.48;
+ const normals=[vnorm({x:.18,y:.08,z:1}),vnorm({x:.15,y:1,z:.35}),vnorm({x:1,y:.28,z:.2})];
+ shells.forEach((num,si)=>{
+   let rad=R*(si+1)/(shells.length+.35);
+   const planes=num<=2?[normals[si%normals.length]]:normals;
+   planes.forEach(n=>orbit(rad,n,si+1));
+   for(let i=0;i<num;i++){
+     let n=planes[i%planes.length], basis=orbitBasis(n);
+     let t=2*Math.PI*Math.floor(i/planes.length)/Math.ceil(num/planes.length)+(i%planes.length)*.42+si*.28;
+     let p=vadd(basis.a,basis.b,Math.cos(t)*rad,Math.sin(t)*rad);
+     add(p.x,p.y,p.z,-1,{shell:si+1});
+   }
+ });
+}
+function specialShape(sh,n,s,pts,ed){function add(x,y,z){pts.push({x,y,z})}function edge(i,j){ed.push([i,j])}
+ if(sh==='circle2d'||sh==='square2d'||sh==='rect2d'||sh==='ellipse2d'||sh==='line2d'){if(sh==='square2d'){let a=s/2;[[-a,-a,0],[a,-a,0],[a,a,0],[-a,a,0]].forEach(p=>add(...p));[[0,1],[1,2],[2,3],[3,0]].forEach(e=>edge(...e))}else if(sh==='rect2d'){let a=s,b=s/2;[[-a/2,-b/2,0],[a/2,-b/2,0],[a/2,b/2,0],[-a/2,b/2,0]].forEach(p=>add(...p));[[0,1],[1,2],[2,3],[3,0]].forEach(e=>edge(...e))}else if(sh==='line2d'){for(let i=0;i<n;i++)add(-s/2+s*i/(n-1),0,0);for(let i=0;i<n-1;i++)edge(i,i+1)}else{for(let i=0;i<n;i++){let t=2*Math.PI*i/n;add((sh==='ellipse2d'?s*.75:s/2)*Math.cos(t),(sh==='ellipse2d'?s*.35:s/2)*Math.sin(t),0);edge(i,(i+1)%n)}}return}
+ if(sh==='sphere'||sh==='sphereDipole'||sh==='hemi'||sh==='egg'||sh==='eggDipole'){
+  let rings=sh==='hemi'?4:7, per=Math.max(8,Math.floor(n/rings)), R=s/2;
+  let startIndex=[];
+  for(let r=0;r<rings;r++){
+    let theta=(sh==='hemi'? (r+1)/(rings+1)*Math.PI/2 : (r+1)/(rings+1)*Math.PI);
+    let rad=Math.sin(theta)*R, z=Math.cos(theta)*R;
+    // Huevo/ovoide didáctico: elipsoide alargado, simétrico respecto al centro para que el cálculo en el centro sea verificable.
+    if(sh.includes('egg')){z*=1.55; rad*=0.78 + 0.18*Math.sin(theta)}
+    startIndex.push(pts.length);
+    for(let i=0;i<per;i++){let t=2*Math.PI*i/per;add(rad*Math.cos(t),rad*Math.sin(t),z)}
+  }
+  let top=pts.length; add(0,0,sh==='hemi'?R:(sh.includes('egg')?1.55*R:R));
+  let bottom=-1; if(sh!=='hemi'){bottom=pts.length; add(0,0,sh.includes('egg')?-1.55*R:-R)}
+  for(let r=0;r<rings;r++)for(let i=0;i<per;i++){edge(startIndex[r]+i,startIndex[r]+(i+1)%per); if(r<rings-1)edge(startIndex[r]+i,startIndex[r+1]+i)}
+  for(let i=0;i<per;i++){edge(top,startIndex[0]+i); if(bottom>=0)edge(bottom,startIndex[rings-1]+i)}
+  return
+}
+ if(sh==='torus'){let R=s/2,r=s/5, M=12,m=8;for(let i=0;i<M;i++){let u=2*Math.PI*i/M;for(let j=0;j<m;j++){let v=2*Math.PI*j/m;add((R+r*Math.cos(v))*Math.cos(u),(R+r*Math.cos(v))*Math.sin(u),r*Math.sin(v));}}for(let i=0;i<M;i++)for(let j=0;j<m;j++){let id=i*m+j;edge(id,((i+1)%M)*m+j);edge(id,i*m+(j+1)%m)}return}
+ if(sh==='chartres'){
+  // Emisor tipo Chartres / Jeandel Foye (aproximación geométrica didáctica):
+  // NO se unen todos los nodos al centro. Se trazan anillos, pétalos, roseta y cruces
+  // para que al activar "Unir cargas" aparezca el mandala/emisor, no radios sueltos.
+  const R=s/2, seg=24;
+  const rings=[];
+  function ring(rad, phase=0){
+    const start=pts.length; rings.push(start);
+    for(let i=0;i<seg;i++){let t=2*Math.PI*i/seg+phase; add(rad*Math.cos(t),rad*Math.sin(t),0)}
+    for(let i=0;i<seg;i++) edge(start+i,start+(i+1)%seg);
+    return start;
+  }
+  const r1=ring(0.16*R,0), r2=ring(0.33*R,Math.PI/24), r3=ring(0.52*R,0), r4=ring(0.74*R,Math.PI/24), r5=ring(0.96*R,0);
+  // 12 pétalos principales, formados por arcos rectos entre anillos alternos.
+  for(let k=0;k<12;k++){
+    let a=(2*k)%seg, b=(a+1)%seg, c=(a+2)%seg, d=(a+3)%seg;
+    edge(r2+a,r3+b); edge(r3+b,r4+c); edge(r4+c,r3+d); edge(r3+d,r2+a);
+    edge(r1+a,r2+b); edge(r2+b,r3+c);
+  }
+  // Roseta interna de 6 lóbulos y estrella externa; esto marca cruces/nodos de carga.
+  for(let k=0;k<6;k++){
+    let a=(4*k)%seg, b=(a+4)%seg, c=(a+8)%seg, d=(a+12)%seg;
+    edge(r1+a,r2+b); edge(r2+b,r1+c); edge(r3+a,r5+c); edge(r5+c,r3+d);
+  }
+  // Caminos tangenciales tipo laberinto: segmentos no radiales para reconocer el emisor.
+  for(let k=0;k<seg;k+=2){ edge(r2+k,r4+(k+5)%seg); edge(r4+k,r2+(k+7)%seg); }
+  // Centro simbólico conectado solo al primer anillo para cerrar el diseño, no a todos los nodos.
+  const center=pts.length; add(0,0,0); for(let k=0;k<seg;k+=6) edge(center,r1+k);
+  return
+}
+}
+function autoEdges(ed,pts,maxD){for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){let d=Math.hypot(pts[i].x-pts[j].x,pts[i].y-pts[j].y,pts[i].z-pts[j].z);if(d<maxD)ed.push([i,j])}} function dot(a,b){return a[0]*b[0]+a[1]*b[1]+a[2]*b[2]}
+function rot(p){let {x,y,z}=p,rx=state.rotX,ry=state.rotY,rz=state.rotZ;let cy=Math.cos(rx),sy=Math.sin(rx), y1=y*cy-z*sy,z1=y*sy+z*cy;y=y1;z=z1;let cx=Math.cos(ry),sx=Math.sin(ry),x1=x*cx+z*sx,z2=-x*sx+z*cx;x=x1;z=z2;let cz=Math.cos(rz),sz=Math.sin(rz),x2=x*cz-y*sz,y2=x*sz+y*cz;return{x:x2,y:y2,z}} function proj(p){let r=rot(p);let scale=state.zoom*(500/(500-r.z));return{x:cv.width/2+r.x*scale,y:cv.height/2-r.y*scale,z:r.z,scale}}
+function draw(){resize();ctx.clearRect(0,0,cv.width,cv.height);grid(); if(state.showEq)drawEquip(); if(state.showField)drawField(); drawShape(); drawP(); updateResults()}
+function resize(){let rect=cv.parentElement.getBoundingClientRect();let d=devicePixelRatio||1;if(cv.width!==Math.floor(rect.width*d)||cv.height!==Math.floor(rect.height*d)){cv.width=rect.width*d;cv.height=rect.height*d;ctx.setTransform(d,0,0,d,0,0);cv.width=rect.width;cv.height=rect.height}}
+function grid(){ctx.strokeStyle='rgba(120,120,120,.12)';ctx.lineWidth=1;for(let x=0;x<cv.width;x+=25){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,cv.height);ctx.stroke()}for(let y=0;y<cv.height;y+=25){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(cv.width,y);ctx.stroke()}}
+function drawOrbit(edge){
+  let basis=orbitBasis(edge.normal), first=true;
+  ctx.beginPath();
+  for(let k=0;k<=96;k++){
+    let t=2*Math.PI*k/96;
+    let p=vadd(basis.a,basis.b,Math.cos(t)*edge.r,Math.sin(t)*edge.r);
+    let pr=proj(p);
+    if(first){ctx.moveTo(pr.x,pr.y);first=false}else ctx.lineTo(pr.x,pr.y);
+  }
+  ctx.stroke();
+}
+function drawShape(){if(state.showEdges){ctx.setLineDash([7,5]);ctx.strokeStyle=getComputedStyle(document.body).getPropertyValue('--edge');ctx.lineWidth=2;for(const e of state.edges){if(Array.isArray(e)){let a=proj(state.charges[e[0]]),b=proj(state.charges[e[1]]);ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()}else if(e.type==='orbit'){drawOrbit(e)}}ctx.setLineDash([])}let arr=state.charges.map((c,i)=>({c,i,p:proj(c)})).sort((a,b)=>a.p.z-b.p.z);for(const o of arr){ctx.beginPath();let r=o.c.atomNucleus?13:(Math.abs(o.c.q)<1e-18?5:8);ctx.fillStyle=o.c.atomNucleus?'#ff3333':(Math.abs(o.c.q)<1e-18?'#9e9e9e':(o.c.q>=0?'#d52525':'#1e5bd7'));ctx.arc(o.p.x,o.p.y,r,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=o.c.atomNucleus?2:1;ctx.stroke();if(state.showText){ctx.fillStyle=getComputedStyle(document.body).getPropertyValue('--ink');ctx.font=o.c.atomNucleus?'bold 12px Arial':'12px Arial';let label=o.c.atomNucleus?`Núcleo +${Math.round(o.c.q/baseQ())}Q`:((Math.abs(o.c.q)<1e-18?'0':(o.c.q>=0?'+':'−'))+' q'+(o.i+1));ctx.fillText(label,o.p.x+r+3,o.p.y-9)}}}
+function drawP(){if(!state.showP)return;let p=proj(state.p);ctx.fillStyle='#12aa40';ctx.beginPath();ctx.arc(p.x,p.y,7,0,7);ctx.fill();ctx.fillStyle=getComputedStyle(document.body).getPropertyValue('--ink');ctx.font='bold 14px Arial';ctx.fillText('P',p.x+9,p.y+4);el('readout').textContent=`P: x=${state.p.x.toFixed(2)} cm · y=${state.p.y.toFixed(2)} cm · z=${state.p.z.toFixed(2)} cm`;el('px').value=round(state.p.x);el('py').value=round(state.p.y);el('pz').value=round(state.p.z)}
+function viewToWorld(X,Y,z=0){let wx=(X-cv.width/2)/state.zoom, wy=-(Y-cv.height/2)/state.zoom;return invrot({x:wx,y:wy,z})} function invrot(p){let {x,y,z}=p;let rz=-state.rotZ,cz=Math.cos(rz),sz=Math.sin(rz),x0=x*cz-y*sz,y0=x*sz+y*cz;x=x0;y=y0;let ry=-state.rotY,cx=Math.cos(ry),sx=Math.sin(ry),x1=x*cx+z*sx,z1=-x*sx+z*cx;x=x1;z=z1;let rx=-state.rotX,cy=Math.cos(rx),sy=Math.sin(rx),y1=y*cy-z*sy,z2=y*sy+z*cy;return{x,y:y1,z:z2}}
+function drawField(){let step=60;ctx.strokeStyle=getComputedStyle(document.body).getPropertyValue('--field');ctx.fillStyle=ctx.strokeStyle;ctx.lineWidth=1.3;for(let x=30;x<cv.width;x+=step)for(let y=30;y<cv.height;y+=step){let w=viewToWorld(x,y,0), e=E(w.x,w.y,w.z), er=rot(e);let m=Math.hypot(er.x,er.y);if(m<1e-9)continue;let len=18*Math.tanh(e.mag/5000);let dx=er.x/m*len,dy=-er.y/m*len;arrow(x,y,x+dx,y+dy)} drawFieldLines()}
+function arrow(x1,y1,x2,y2){ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();let a=Math.atan2(y2-y1,x2-x1);ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-6*Math.cos(a-.5),y2-6*Math.sin(a-.5));ctx.moveTo(x2,y2);ctx.lineTo(x2-6*Math.cos(a+.5),y2-6*Math.sin(a+.5));ctx.stroke()}
+function vnorm(a){let m=Math.hypot(a.x,a.y,a.z)||1;return{x:a.x/m,y:a.y/m,z:a.z/m}}
+function vcross(a,b){return{x:a.y*b.z-a.z*b.y,y:a.z*b.x-a.x*b.z,z:a.x*b.y-a.y*b.x}}
+function vadd(a,b,sa=1,sb=1){return{x:a.x*sa+b.x*sb,y:a.y*sa+b.y*sb,z:a.z*sa+b.z*sb}}
+function orbitBasis(normal){let n=vnorm(normal), ref=Math.abs(n.z)<.9?{x:0,y:0,z:1}:{x:0,y:1,z:0};let a=vnorm(vcross(n,ref));let b=vnorm(vcross(n,a));return{a,b,n}}
+function fieldSeedDirections(c){
+  // Semillas 3D simétricas alrededor de cada carga. Antes eran solo 4 puntos en el plano XY;
+  // por eso octaedro, toroide y Chartres parecían tener campo solo en una mitad.
+  let r=vnorm({x:c.x,y:c.y,z:c.z});
+  if(Math.hypot(c.x,c.y,c.z)<1e-9) r={x:0,y:0,z:1};
+  let ref=Math.abs(r.z)<.92?{x:0,y:0,z:1}:{x:0,y:1,z:0};
+  let t1=vnorm(vcross(r,ref));
+  let t2=vnorm(vcross(r,t1));
+  return [
+    r,
+    vnorm(vadd(r,t1,.86,.50)), vnorm(vadd(r,t1,.86,-.50)),
+    vnorm(vadd(r,t2,.86,.50)), vnorm(vadd(r,t2,.86,-.50)),
+    vnorm(vadd(vadd(r,t1,.70,.42),t2,1,.42)),
+    vnorm(vadd(vadd(r,t1,.70,-.42),t2,1,-.42))
+  ];
+}
+function sampleChargesForLines(){
+  const all=state.charges.filter(c=>Math.abs(c.q)>1e-18);
+  const maxSeeds = (state.shape==='torus'||state.shape==='chartres'||state.shape.includes('sphere')||state.shape.includes('egg')) ? 28 : 40;
+  if(all.length<=maxSeeds) return all;
+  // Muestreo uniforme en toda la lista, no solo los primeros índices. Esto conserva simetría visual.
+  let out=[];
+  for(let k=0;k<maxSeeds;k++) out.push(all[Math.floor(k*all.length/maxSeeds)]);
+  return out;
+}
+function drawFieldLines(){
+  ctx.lineWidth=1.15;
+  ctx.strokeStyle=getComputedStyle(document.body).getPropertyValue('--field');
+  const charges=sampleChargesForLines();
+  for(const c of charges){
+    const dirs=fieldSeedDirections(c);
+    for(const d of dirs){
+      // Para +Q las líneas salen; para −Q se trazan en sentido inverso para que entren.
+      let p={x:c.x+d.x*1.8,y:c.y+d.y*1.8,z:c.z+d.z*1.8};
+      ctx.beginPath();
+      let pr=proj(p); ctx.moveTo(pr.x,pr.y);
+      for(let stepN=0; stepN<120; stepN++){
+        let e=E(p.x,p.y,p.z), mag=e.mag;
+        if(mag<1e-9) break;
+        let dir=c.q>=0?1:-1;
+        let ds=.55;
+        p.x+=dir*e.x/mag*ds; p.y+=dir*e.y/mag*ds; p.z+=dir*e.z/mag*ds;
+        // evita que la línea atraviese otra carga y genere saltos raros
+        let near=false;
+        for(const q of state.charges){ if(q!==c && Math.hypot(p.x-q.x,p.y-q.y,p.z-q.z)<1.3){near=true;break;} }
+        pr=proj(p); ctx.lineTo(pr.x,pr.y);
+        if(near||pr.x<-80||pr.y<-80||pr.x>cv.width+80||pr.y>cv.height+80) break;
+      }
+      ctx.stroke();
+    }
+  }
+}
+function drawEquip(){
+ // Equipotenciales dinámicas en el plano de la pantalla. Se recalculan con la rotación/zoom actuales.
+ // En figuras con muchos nodos (Chartres, toroide, esfera) no usamos min/max extremos cerca de una carga,
+ // porque aplastan las curvas. Usamos percentiles para que las líneas se vean en toda la escena.
+ let cell=22, vals=[], sample=[];
+ for(let ix=0;ix<=cv.width/cell;ix++){
+   vals[ix]=[];
+   for(let iy=0;iy<=cv.height/cell;iy++){
+     let w=viewToWorld(ix*cell,iy*cell,0), v=V(w.x,w.y,w.z);
+     if(!isFinite(v)||Math.abs(v)>5e7)v=NaN;
+     vals[ix][iy]=v;
+     if(!isNaN(v)) sample.push(v);
+   }
+ }
+ if(sample.length<20)return;
+ sample.sort((a,b)=>a-b);
+ let q=(t)=>sample[Math.max(0,Math.min(sample.length-1,Math.floor(t*(sample.length-1))))];
+ let lo=q(.08), hi=q(.92);
+ if(!isFinite(lo)||!isFinite(hi)||Math.abs(hi-lo)<1e-9)return;
+ ctx.strokeStyle=getComputedStyle(document.body).getPropertyValue('--eq');ctx.lineWidth=1.5;
+ let levels=[];
+ for(let i=1;i<11;i++)levels.push(lo+(hi-lo)*i/11);
+ // Si hay cargas positivas y negativas, incluir niveles cercanos a V=0 ayuda a ver perpendicularidad con E.
+ let hasP=state.charges.some(c=>c.q>0), hasN=state.charges.some(c=>c.q<0);
+ if(hasP&&hasN){levels.push(0,hi*.25,lo*.25)}
+ for(const level of levels)for(let ix=0;ix<vals.length-1;ix++)for(let iy=0;iy<vals[0].length-1;iy++){
+   let v=[vals[ix][iy],vals[ix+1][iy],vals[ix+1][iy+1],vals[ix][iy+1]];if(v.some(isNaN))continue;
+   let pts=[[ix*cell,iy*cell],[(ix+1)*cell,iy*cell],[(ix+1)*cell,(iy+1)*cell],[ix*cell,(iy+1)*cell]], inter=[];
+   for(let a=0;a<4;a++){let b=(a+1)%4;if((v[a]-level)*(v[b]-level)<0){let t=(level-v[a])/(v[b]-v[a]);inter.push([pts[a][0]+t*(pts[b][0]-pts[a][0]),pts[a][1]+t*(pts[b][1]-pts[a][1])])}}
+   if(inter.length===2){ctx.beginPath();ctx.moveTo(inter[0][0],inter[0][1]);ctx.lineTo(inter[1][0],inter[1][1]);ctx.stroke()}
+ }
+}
+function updateResults(){let v=V(state.p.x,state.p.y,state.p.z), e=E(state.p.x,state.p.y,state.p.z), u=U().u, q0=(+el('q0').value||1)*1e-6;el('vOut').textContent=fmt(v,'V');el('eOut').textContent=fmt(e.mag,'N/C');el('uOut').textContent=fmt(u,'J');el('uqOut').textContent=fmt(q0*v,'J');el('fOut').textContent=fmt(Math.abs(q0)*e.mag,'N');let centerMsg=(Math.hypot(state.p.x,state.p.y,state.p.z)<1e-9 && e.mag===0)?'<br><b>Simetría:</b> en el centro, los vectores E se cancelan par a par.':'';let c=coeffText();el('formulaBox').innerHTML=`V(P)=(${isFinite(c.cvv)?c.cvv.toFixed(4):'∞'}) kQ/R<br>|E(P)|=(${c.cem.toFixed(4)}) kQ/R²<br>U=(${c.cu.toFixed(4)}) kQ²/R<br><b>Figura:</b> ${state.shape} · <b>N:</b> ${state.charges.length}${centerMsg}`}
+function fmt(x,u){if(!isFinite(x))return '∞';let ax=Math.abs(x);let s=ax>=1e4||ax<1e-2?x.toExponential(3):x.toFixed(3);return s+' '+u} function round(x){return Math.round(x*100)/100}
+function coeffText(){
+  const Q=Math.abs(baseQ())||1e-6, Rm=(cm()||10)/100;
+  const v=V(state.p.x,state.p.y,state.p.z), e=E(state.p.x,state.p.y,state.p.z), uu=U().u;
+  const cvv=isFinite(v)?v/(K*Q/Rm):Infinity;
+  const cex=e.x/(K*Q/(Rm*Rm)), cey=e.y/(K*Q/(Rm*Rm)), cez=e.z/(K*Q/(Rm*Rm)), cem=e.mag/(K*Q/(Rm*Rm));
+  const cu=uu/(K*Q*Q/Rm);
+  return {cvv,cex,cey,cez,cem,cu,v,e,u:uu,Q,Rm};
+}
+function showCalc(){
+  let c=coeffText();
+  let lines=[];
+  lines.push('<h2>Cálculo paso a paso</h2>');
+  lines.push('<p><b>Variables usadas:</b> k = 8.9875517923×10⁹ N·m²/C², Q = '+(baseQ()*1e6).toFixed(3)+' µC, R = '+cm().toFixed(3)+' cm. Las distancias r se convierten a metros en el cálculo.</p>');
+  lines.push('<h3>1) Potencial eléctrico en P</h3><pre>V(P)=k Σ qᵢ/rᵢ');
+  state.charges.forEach((q,i)=>{let rcm=Math.hypot(state.p.x-q.x,state.p.y-q.y,state.p.z-q.z);let ri=rcm/100;let term=ri<1e-12?'∞':K*q.q/ri;lines.push(`q${i+1}: r${i+1}=${rcm.toFixed(3)} cm, q${i+1}=${(q.q*1e6).toFixed(3)} µC, término = k q${i+1}/r${i+1} = ${isFinite(term)?fmt(term,'V'):'∞'}`)});
+  lines.push(`\nExpresión reducida aproximada: V(P) = (${isFinite(c.cvv)?c.cvv.toFixed(6):'∞'}) · kQ/R`);
+  lines.push(`Sustitución: V(P) = (${isFinite(c.cvv)?c.cvv.toFixed(6):'∞'}) · k · (${(baseQ()*1e6).toFixed(3)} µC) / (${cm().toFixed(3)} cm)`);
+  lines.push(`Resultado: V(P) = ${fmt(c.v,'V')}</pre>`);
+  lines.push('<h3>2) Campo eléctrico en P</h3><pre>E(P)=k Σ qᵢ r⃗ᵢ/rᵢ³');
+  lines.push(`Expresión vectorial reducida: E(P) = ( ${c.cex.toFixed(6)} î + ${c.cey.toFixed(6)} ĵ + ${c.cez.toFixed(6)} k̂ ) · kQ/R²`);
+  lines.push(`Magnitud: |E(P)| = (${c.cem.toFixed(6)}) · kQ/R²`);
+  lines.push(`Resultado: Ex=${fmt(c.e.x,'N/C')}, Ey=${fmt(c.e.y,'N/C')}, Ez=${fmt(c.e.z,'N/C')}, |E|=${fmt(c.e.mag,'N/C')}</pre>`);
+  let uu=U();
+  lines.push('<h3>3) Energía potencial eléctrica del sistema</h3><pre>U = k Σᵢ<ⱼ qᵢqⱼ/rᵢⱼ');
+  lines.push(`Número de pares usados = ${uu.terms.length}`);
+  lines.push(`Expresión reducida aproximada: U = (${c.cu.toFixed(6)}) · kQ²/R`);
+  lines.push(`Sustitución: U = (${c.cu.toFixed(6)}) · k · Q² / R`);
+  lines.push(`Resultado: U = ${fmt(c.u,'J')}</pre>`);
+  lines.push('<p><b>Nota para estudiantes:</b> si la expresión reducida en k, Q y R es correcta, el planteamiento físico está bien; luego se revisa la sustitución numérica y unidades.</p>');
+  el('modalText').innerHTML=lines.join('\n');el('modal').classList.add('show')}
+function showSolution(){el('modalText').innerHTML='<h2>Hoja de solución para imprimir</h2><p>1) Identificar figura, cargas y coordenadas.</p><p>2) Calcular distancias r desde P y entre pares de cargas.</p><p>3) Aplicar V(P)=kΣqᵢ/rᵢ.</p><p>4) Aplicar U=kΣᵢ&lt;ⱼqᵢqⱼ/rᵢⱼ.</p><p>5) Si se coloca q₀ en P: U=q₀V y F=q₀E.</p><p>Use el botón “Ver cálculo paso a paso” para copiar los valores numéricos.</p>';el('modal').classList.add('show')}
+let dragging=false,last=null;cv.addEventListener('pointerdown',e=>{dragging=true;last={x:e.clientX,y:e.clientY,shift:e.shiftKey};cv.setPointerCapture(e.pointerId)});cv.addEventListener('pointermove',e=>{if(!dragging)return;if(last.shift){let r=cv.getBoundingClientRect();state.p=viewToWorld(e.clientX-r.left,e.clientY-r.top,0)}else{state.rotY+=(e.clientX-last.x)*0.01;state.rotX+=(e.clientY-last.y)*0.01}last.x=e.clientX;last.y=e.clientY;draw()});cv.addEventListener('pointerup',()=>dragging=false);cv.addEventListener('wheel',e=>{e.preventDefault();state.zoom*=e.deltaY<0?1.08:.92;state.zoom=Math.max(10,Math.min(120,state.zoom));draw()},{passive:false});cv.addEventListener('dblclick',()=>{state.p={x:0,y:0,z:0};draw()});function loop(){if(state.anim){if(state.axis.includes('x'))state.rotX+=state.speed;if(state.axis.includes('y'))state.rotY+=state.speed;if(state.axis.includes('z'))state.rotZ+=state.speed;draw();requestAnimationFrame(loop)}}
+function init(){initButtons();build();draw();window.onresize=draw;el('q0').oninput=draw}init();
+</script>
+</body></html>

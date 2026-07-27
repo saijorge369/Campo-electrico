@@ -354,11 +354,14 @@ solTitle:"Step-by-step solutions",
 saveOk:"Session saved.",clearConfirm:"Clear all history?",csvExport:"Data exported.",
 errFill:"Fill all fields.",errGen:"Error generating test."}};
 
-let LANG='es';function T(k){return STR[LANG]&&STR[LANG][k]||STR.es[k]||k}
+let LANG='es';function tr(k){return STR[LANG]&&STR[LANG][k]||STR.es[k]||k}
 //=== LANGUAGE ===
 document.getElementById('langSelect').onchange=function(){LANG=this.value;applyI18n();renderPractice();};
 function applyI18n(){
- document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(T(k))el.textContent=el.dataset.i18nOrg||el.textContent;});
+ document.querySelectorAll('[data-i18n]').forEach(function(el){
+  var k=el.dataset.i18n,txt=tr(k);
+  if(txt&&txt!==k)el.textContent=txt;
+ });
 }
 //=== THEMES ===
 const themeSel=document.getElementById('themeSel'),modeSlider=document.getElementById('modeSlider');
@@ -570,8 +573,8 @@ function renderPractice(){
   const div=document.createElement('div');div.className='charge-card'+(i===pracIdx?' style="border-color:var(--blue);"':'');
   div.style.margin='6px 0';div.style.padding='8px 10px';
   if(i===pracIdx)div.style.borderColor='var(--blue)';div.style.borderWidth='2px';
-  div.innerHTML='<b style="font-size:.85rem;color:'+(i===pracIdx?'var(--blue)':'var(--ink)')+'">'+(i===0?T('ps0t'):T('ps'+(i-1)+'t'))+'</b>'+
-   '<div style="font-size:.82rem;line-height:1.4;margin-top:4px;color:var(--muted)">'+(i===0?T('ps0'):T('ps'+(i-1)))+'</div>';
+  div.innerHTML='<b style="font-size:.85rem;color:'+(i===pracIdx?'var(--blue)':'var(--ink)')+'">'+(i===0?tr('ps0t'):tr('ps'+(i-1)+'t'))+'</b>'+
+   '<div style="font-size:.82rem;line-height:1.4;margin-top:4px;color:var(--muted)">'+(i===0?tr('ps0'):tr('ps'+(i-1)))+'</div>';
   cont.appendChild(div)
  }
  document.getElementById('pracPrev').disabled=pracIdx===0;
@@ -586,7 +589,7 @@ function genTest(){
  const ln=document.getElementById('tLastName').value.trim();
  const em=document.getElementById('tEmail').value.trim();
  const pa=document.getElementById('tParalelo').value.trim();
- if(!fn||!ln||!em||!pa){alert(T('errFill'));return}
+ if(!fn||!ln||!em||!pa){alert(tr('errFill'));return}
  
  // Generate 10 questions: 3 normal (1pt) + 7 hard (2pt)
  const shapes=['square','rect','triang','rhombus','hexagon','circle'];
@@ -674,7 +677,7 @@ function genTest(){
  for(let i=allQs.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[allQs[i],allQs[j]]=[allQs[j],allQs[i]]}
  
  testQuestions=allQs;testAnswers={};
- renderTest();document.getElementById('testInfo').textContent=T('testDesc');
+ renderTest();document.getElementById('testInfo').textContent=tr('testDesc');
  document.getElementById('testInfo').classList.remove('hidden');
  document.getElementById('testGenBtn').disabled=true;
 }
@@ -683,7 +686,7 @@ function renderTest(){
  const grid=document.createElement('div');grid.className='question-grid';
  testQuestions.forEach((q,i)=>{
   const card=document.createElement('div');card.className='q-card';card.dataset.q=q.id;
-  const diffLabel=q.type==='normal'?T('qNormal'):T('qHard');
+  const diffLabel=q.type==='normal'?tr('qNormal'):tr('qHard');
   const diffPts=q.type==='normal'?'1pt':'2pt';
   card.innerHTML='<div class="qtext">'+q.q+' <small>['+diffLabel+' · '+diffPts+']</small></div>'+
    '<div style="display:flex;align-items:center;gap:6px"><input class="qans" id="qans_'+q.id+'" type="number" step="0.01" placeholder="Respuesta">'+
@@ -716,7 +719,7 @@ function gradeTest(){
  
  // Show solutions
  const solDiv=document.getElementById('testSolutions');
- solDiv.innerHTML='<h3 style="margin:12px 0 8px;color:var(--blue);font-size:.9rem">'+T('solTitle')+'</h3>';
+ solDiv.innerHTML='<h3 style="margin:12px 0 8px;color:var(--blue);font-size:.9rem">'+tr('solTitle')+'</h3>';
  testQuestions.forEach(q=>{
   const div=document.createElement('div');div.className='charge-card';div.style.margin='4px 0';
   div.innerHTML='<b style="font-size:.82rem">#'+q.id+'. '+q.q.substring(0,60)+'…</b>'+
@@ -751,10 +754,10 @@ document.getElementById('profSaveBtn').onclick=()=>{
   notes:document.getElementById('pNotes').value,time:new Date().toISOString()});
  if(sessions.length>100)sessions=sessions.slice(0,100);
  localStorage.setItem('ceSessions',JSON.stringify(sessions));
- renderProfSessions();alert(T('saveOk'))
+ renderProfSessions();alert(tr('saveOk'))
 };
 document.getElementById('profClearBtn').onclick=()=>{
- if(confirm(T('clearConfirm'))){localStorage.removeItem('ceSessions');renderProfSessions()}
+ if(confirm(tr('clearConfirm'))){localStorage.removeItem('ceSessions');renderProfSessions()}
 };
 document.getElementById('profExportBtn').onclick=()=>{
  let sessions=JSON.parse(localStorage.getItem('ceSessions')||'[]');
@@ -767,7 +770,7 @@ document.getElementById('profExportBtn').onclick=()=>{
 function renderProfSessions(){
  const cont=document.getElementById('profSessions');
  const sessions=JSON.parse(localStorage.getItem('ceSessions')||'[]');
- if(!sessions.length){cont.innerHTML='<p style="color:var(--muted);padding:8px;font-size:.82rem">'+T('noSessions')+'</p>';return}
+ if(!sessions.length){cont.innerHTML='<p style="color:var(--muted);padding:8px;font-size:.82rem">'+tr('noSessions')+'</p>';return}
  let html='<div style="max-height:400px;overflow:auto">';
  sessions.forEach((s,i)=>{
   html+='<div class="charge-card" style="cursor:pointer;margin:2px 0">'+
@@ -778,20 +781,26 @@ function renderProfSessions(){
 }
 renderProfSessions();
 //=== MODE TABS ===
-document.querySelectorAll('.mode-tab').forEach(tab=>{
- tab.onclick=function(){
-  document.querySelectorAll('.mode-tab').forEach(t=>t.classList.remove('active'));
-  this.classList.add('active');
-  document.querySelectorAll('.mode-section').forEach(s=>s.classList.add('hidden'));
-  document.getElementById(this.dataset.mode+'Mode').classList.remove('hidden');
-  if(this.dataset.mode==='sim')setTimeout(resize,50);
+(function initTabs(){
+ var tabs=document.querySelectorAll('.mode-tab');
+ for(var ti=0;ti<tabs.length;ti++){
+  (function(tab){
+   tab.onclick=function(){
+    for(var tj=0;tj<tabs.length;tj++)tabs[tj].classList.remove('active');
+    this.classList.add('active');
+    var secs=document.querySelectorAll('.mode-section');
+    for(var sk=0;sk<secs.length;sk++)secs[sk].classList.add('hidden');
+    var target=document.getElementById(this.dataset.mode+'Mode');
+    if(target)target.classList.remove('hidden');
+    if(this.dataset.mode==='sim')setTimeout(resize,50);
+   };
+  })(tabs[ti]);
  }
-});
+})();
 //=== INIT ===
-document.getElementById('printBtn').onclick=()=>window.print();
-resetAll();setTimeout(()=>{resize();fitAll()},100);
-// Fix data-i18n
-document.querySelectorAll('[data-i18n]').forEach(el=>{el.dataset.i18nOrg=el.textContent});
+document.getElementById('printBtn').onclick=function(){window.print()};
+applyI18n();
+resetAll();setTimeout(function(){resize();fitAll()},100);
 renderPractice();
 </script>
 </body>

@@ -5,302 +5,794 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Campo Eléctrico I — CIENCIA OMSAIRAM</title>
 <style>
-/* ===== PALETTES ===== */
-:root{--bg:#fff8e6;--card:#fff;--text:#111;--accent:#0f55aa;--border:#111;--btn:#ffd33d;--canvas-bg:#fff;--paper:#fff8e6;--blue:#0f55aa;--red:#e43622;--green:#16773a;--trace:#16773a;--header-bg:#fff;--shadow:rgba(0,0,0,.15);--tbl-head:#0f55aa;--slider-bg:#ddd}
-.Theme--blackboard{--bg:#1a1f2e;--card:#242a3d;--text:#e8eaf0;--accent:#6c8cff;--border:#3a4060;--btn:#6c8cff;--canvas-bg:#1e2435;--paper:#1a1f2e;--blue:#6c8cff;--red:#ff6b6b;--green:#4cd964;--trace:#6c8cff;--header-bg:#1a1f2e;--shadow:rgba(0,0,0,.3);--tbl-head:#6c8cff;--slider-bg:#3a4060}
-.Theme--davinci{--bg:#2b1f0e;--card:#3d2e18;--text:#f0e6d0;--accent:#d4a84b;--border:#6b4f2a;--btn:#d4a84b;--canvas-bg:#322415;--paper:#2b1f0e;--blue:#d4a84b;--red:#e8744a;--green:#8ab85c;--trace:#d4a84b;--header-bg:#2b1f0e;--shadow:rgba(0,0,0,.3);--tbl-head:#d4a84b;--slider-bg:#6b4f2a}
-.Theme--dark{--bg:#000;--card:#111;--text:#e0e0e0;--accent:#4488ff;--border:#333;--btn:#4488ff;--canvas-bg:#0a0a0a;--paper:#000;--blue:#4488ff;--red:#ff4444;--green:#44cc44;--trace:#4488ff;--header-bg:#000;--shadow:rgba(0,0,0,.5);--tbl-head:#4488ff;--slider-bg:#333}
+/* ===== ROOT / THEMES ===== */
+:root{--bg:#f3f6fb;--card:#fff;--paper:#fff;--ink:#101820;--muted:#5d6875;--line:#d7dee8;--blue:#163c6d;--blue2:#2563a6;--red:#a31f34;--gold:#c98b2b;--green:#28795b;--accent:#0f55aa;--canvas-bg:#fbfdff;--header-bg:#fff;--btn-bg:#ffd33d;--btn-text:#111;--btn:#ffd33d;--shadow:0 18px 45px rgba(15,32,55,.12);--slider-bg:#ddd;--positive:#e43622;--negative:#0f55aa;--test:#16773a}
+.Theme--blackboard{--bg:#1a1f2e;--card:#242a3d;--paper:#242a3d;--ink:#e8eaf0;--muted:#8892b0;--line:#3a4060;--blue:#6c8cff;--blue2:#8aa4ff;--red:#ff6b6b;--gold:#ffd700;--green:#4cd964;--accent:#6c8cff;--canvas-bg:#1e2435;--header-bg:#1a1f2e;--btn-bg:#6c8cff;--btn-text:#fff;--shadow:0 18px 45px rgba(0,0,0,.3);--slider-bg:#3a4060;--positive:#ff6b6b;--negative:#6c8cff;--test:#4cd964}
+.Theme--davinci{--bg:#2b1f0e;--card:#3d2e18;--paper:#3d2e18;--ink:#f0e6d0;--muted:#b8a88a;--line:#6b4f2a;--blue:#d4a84b;--blue2:#e0b85c;--red:#e8744a;--gold:#ffd700;--green:#8ab85c;--accent:#d4a84b;--canvas-bg:#322415;--header-bg:#2b1f0e;--btn-bg:#d4a84b;--btn-text:#2b1f0e;--shadow:0 18px 45px rgba(0,0,0,.3);--slider-bg:#6b4f2a;--positive:#e8744a;--negative:#d4a84b;--test:#8ab85c}
+.Theme--dark{--bg:#000;--card:#111;--paper:#111;--ink:#e0e0e0;--muted:#888;--line:#333;--blue:#4488ff;--blue2:#66aaff;--red:#ff4444;--gold:#ffaa00;--green:#44cc44;--accent:#4488ff;--canvas-bg:#0a0a0a;--header-bg:#000;--btn-bg:#4488ff;--btn-text:#fff;--shadow:0 18px 45px rgba(0,0,0,.5);--slider-bg:#333;--positive:#ff4444;--negative:#4488ff;--test:#44cc44}
 
-body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text);transition:background .2s,color .2s}
-header{padding:6px 10px;background:var(--header-bg);border-bottom:2px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-h1{margin:0;font-size:clamp(18px,4vw,32px)}.sub{font-weight:700;color:var(--accent);font-size:clamp(11px,2vw,14px)}
-.theme-bar{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:wrap}
-.theme-bar select{font-size:12px;padding:3px 5px;border:2px solid var(--border);background:var(--card);color:var(--text);border-radius:0}
-.theme-bar label{font-size:11px;display:flex;align-items:center;gap:3px;color:var(--text)}
-.theme-bar input[type=range]{width:50px;height:14px;accent-color:var(--accent)}
-.theme-bar button{padding:3px 8px;font-size:11px;border:2px solid var(--border);background:var(--btn);color:var(--text);font-weight:700;cursor:pointer;box-shadow:1px 1px 0 var(--shadow)}.theme-bar button:active{transform:translate(1px,1px);box-shadow:none}
-
-.app{display:grid;grid-template-columns:75% 25%;gap:6px;padding:6px;height:calc(100dvh - 48px);box-sizing:border-box}
-.stage{border:2px solid var(--border);background:var(--canvas-bg);position:relative;overflow:hidden}
+*,*::before,*::after{box-sizing:border-box}
+html{min-width:320px;color-scheme:light dark}
+body{margin:0;color:var(--ink);background:var(--bg);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;transition:background .2s,color .2s}
+button,input,select{font:inherit}button{cursor:pointer}
+.shell{width:min(1440px,100%);margin:0 auto;padding:12px}
+/* TOPBAR */
+.topbar{display:grid;grid-template-columns:minmax(380px,1fr) minmax(300px,auto);gap:12px;align-items:start;padding:10px 0 14px}
+.hero-copy{min-width:0}
+.eyebrow{margin:0 0 4px;color:var(--red);font-size:.78rem;font-weight:900;text-transform:uppercase}
+h1{margin:0 0 4px;font-size:clamp(1.2rem,2.5vw,2.6rem);color:var(--blue)}.subtitle{margin:0;color:var(--muted);font-size:clamp(.82rem,1.3vw,1rem);line-height:1.3}
+.toolbar{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;align-items:center}
+.mode-control{display:grid;align-items:center;min-width:140px;gap:2px;padding:4px 7px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--muted);font-size:.68rem;font-weight:900}
+.mode-control select{font-size:11px;padding:2px 4px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:4px}
+.mode-control input[type=range]{width:54px;height:14px;accent-color:var(--accent);padding:0}
+.switch-row{display:flex;align-items:center;justify-content:space-between;gap:6px;min-height:32px;padding:0 2px}
+.switch-row input{position:absolute;inline-size:1px;block-size:1px;opacity:0;pointer-events:none}
+.switch-track{position:relative;width:44px;height:24px;flex:0 0 auto;border-radius:999px;background:var(--line);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 12%,transparent)}
+.switch-track::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--paper);box-shadow:0 2px 6px rgba(0,0,0,.2);transition:transform .18s ease}
+.switch-row input:checked+.switch-track{background:var(--blue)}
+.switch-row input:checked+.switch-track::after{transform:translateX(20px)}
+.switch-state{min-width:28px;color:var(--blue);font-weight:950;text-align:right;font-size:.72rem}
+/* BUTTONS */
+.btn{min-height:36px;padding:0 12px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);font-weight:900;font-size:.82rem;border-radius:6px;transition:.1s}
+.btn.primary{color:#fff;background:var(--blue);border-color:var(--blue)}.btn.green{color:#fff;background:var(--green);border-color:var(--green)}.btn.red{color:#fff;background:var(--red);border-color:var(--red)}.btn.gold{color:#fff;background:var(--gold);border-color:var(--gold)}
+.btn.sm{min-height:30px;padding:0 10px;font-size:.75rem}
+/* MODE TABS */
+.mode-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
+.mode-tab{min-height:44px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--muted);font-weight:900;font-size:.9rem;transition:.1s}
+.mode-tab.active{color:#fff;background:var(--blue);border-color:var(--blue)}
+.hidden{display:none!important}
+/* APP LAYOUT */
+.app{display:grid;grid-template-columns:75% 25%;gap:6px;min-height:calc(100dvh - 220px)}.card{background:var(--paper);border:1px solid var(--line);border-radius:6px;box-shadow:var(--shadow);padding:10px;margin-bottom:8px}
+.stage{position:relative;border:1px solid var(--line);border-radius:6px;background:var(--canvas-bg);overflow:hidden;min-height:400px}
 canvas{width:100%;height:100%;display:block;touch-action:none;background-image:linear-gradient(rgba(15,85,170,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(15,85,170,.09) 1px,transparent 1px);background-size:32px 32px}
-.tools{position:absolute;left:6px;top:6px;display:flex;gap:4px;flex-wrap:wrap}
-.tools button{padding:4px 7px;background:var(--card);color:var(--text);border:2px solid var(--border);font-size:11px;font-weight:700;cursor:pointer;box-shadow:1px 1px 0 var(--shadow)}.tools button:active{transform:translate(1px,1px);box-shadow:none}
-
-.panel{border:2px solid var(--border);background:var(--card);overflow-y:auto;display:flex;flex-direction:column;gap:0}
-.panel::-webkit-scrollbar{width:4px}.panel::-webkit-scrollbar-thumb{background:var(--border)}
-.sec{padding:5px 7px;border-bottom:1px solid var(--border)}
+.canvas-tools{position:absolute;left:5px;top:5px;display:flex;gap:3px;flex-wrap:wrap;z-index:5}
+.canvas-tools button,.mini-btn{padding:3px 7px;font-size:10px;border:1px solid var(--line);border-radius:4px;background:var(--card);color:var(--ink);font-weight:700;box-shadow:0 1px 4px rgba(0,0,0,.1)}.canvas-tools button:active{transform:translate(1px,1px)}
+.canvas-badge{position:absolute;right:5px;bottom:5px;z-index:5}
+/* PANEL */
+.panel{overflow-y:auto;display:flex;flex-direction:column;gap:0;border:1px solid var(--line);border-radius:6px;background:var(--card)}
+.panel::-webkit-scrollbar{width:4px}.panel::-webkit-scrollbar-thumb{background:var(--line);border-radius:2px}
+.sec{padding:4px 7px;border-bottom:1px solid var(--line)}
 .sec:last-child{border-bottom:none}
-h3{margin:0 0 3px;font-size:clamp(11px,1.4vw,13px);color:var(--accent)}
-button,select,input{font:inherit;color:var(--text)}
-button{cursor:pointer}
-.sec button{padding:3px 7px;font-size:11px;border:2px solid var(--border);background:var(--btn);color:var(--text);font-weight:700;margin:1px;box-shadow:1px 1px 0 var(--shadow)}.sec button:active{transform:translate(1px,1px);box-shadow:none}
-input,select{width:100%;border:2px solid var(--border);padding:3px 4px;background:var(--canvas-bg);box-sizing:border-box;font-size:11px}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:4px}
-.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px}
-.card{border:1px solid var(--border);padding:4px 5px;margin:3px 0;background:var(--canvas-bg);font-size:11px}
-.card .row3 label{font-size:10px}
-.metric{display:flex;justify-content:space-between;border:1px solid var(--border);padding:3px 6px;margin:3px 0;font-weight:700;font-size:11px;background:var(--canvas-bg)}
-.mini{font-size:10px;font-weight:400;color:var(--text);opacity:.7;margin:2px 0}
-.check{display:flex;gap:6px;align-items:center;font-weight:700;font-size:11px}
-.check input{width:auto;accent-color:var(--accent)}
-.qpos{color:var(--red);font-weight:700}
-.qneg{color:var(--accent);font-weight:700}
-.print-btn{position:absolute;right:6px;bottom:6px;z-index:10}
-.print-btn button{padding:4px 8px;font-size:10px;background:var(--card);color:var(--text);border:2px solid var(--border);font-weight:700;cursor:pointer}
-
+.sec h3{margin:0 0 2px;font-size:clamp(11px,1.3vw,13px);color:var(--accent);display:flex;align-items:center;gap:4px}
+.sec h3 .badge{font-size:9px;color:var(--muted);font-weight:400}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin:2px 0}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;margin:2px 0}
+.row4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:3px;margin:2px 0}
+label{display:grid;gap:1px;color:var(--muted);font-size:10px;font-weight:800}
+label span{font-size:9px}
+input,select{width:100%;border:1px solid var(--line);padding:3px 4px;background:var(--canvas-bg);color:var(--ink);box-sizing:border-box;font-size:11px;border-radius:4px}
+input[type=range]{padding:0;accent-color:var(--accent);height:16px}
+input[type=checkbox]{width:auto;accent-color:var(--accent)}
+.card-grid{display:grid;gap:2px;padding:2px 0}
+.charge-card{border:1px solid var(--line);padding:3px 4px;margin:2px 0;background:var(--canvas-bg);font-size:10px;border-radius:4px}
+.charge-card b{font-size:10px}
+.metric{display:flex;justify-content:space-between;border:1px solid var(--line);padding:2px 5px;margin:2px 0;font-weight:700;font-size:10px;background:var(--canvas-bg);border-radius:4px}
+.mini{font-size:9px;font-weight:400;color:var(--muted);margin:1px 0}
+.check{display:flex;gap:4px;align-items:center;font-weight:700;font-size:10px}
+.check input{width:auto;margin:0}
+.qpos,.pos{color:var(--positive);font-weight:700}.qneg,.neg{color:var(--negative);font-weight:700}
+/* TEST */
+.test-form{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
+.test-form label{font-size:10px}
+.question-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.q-card{position:relative;display:grid;gap:4px;padding:10px 10px 10px 38px;border:1px solid var(--line);border-radius:6px;background:var(--canvas-bg)}
+.q-card::before{content:attr(data-q);position:absolute;top:8px;left:8px;display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;color:#fff;background:var(--blue);font-size:.75rem;font-weight:900}
+.q-card .qtext{color:var(--ink);font-size:.82rem;font-weight:850;line-height:1.3}
+.q-card .qtext small{font-weight:400;font-size:.72rem;color:var(--muted)}
+.q-card input.qans{width:120px;min-height:30px;text-align:right;font-weight:700}
+.q-correct{color:var(--green);font-weight:900;font-size:.78rem}
+.q-wrong{color:var(--red);font-weight:900;font-size:.78rem}
+.score-box{padding:12px;border:1px solid var(--line);border-radius:6px;background:color-mix(in srgb,var(--green) 9%,var(--paper));text-align:center;margin:10px 0}
+.score-box strong{color:var(--blue);font-size:1.5rem}
+.score-detail{color:var(--muted);font-size:.85rem}
+.step-solution{font-size:11px;line-height:1.4;color:var(--ink);padding:8px;background:color-mix(in srgb,var(--blue) 7%,var(--paper));border-radius:6px;margin-top:4px;white-space:pre-wrap;font-family:"Courier New",monospace}
+.step-solution strong{color:var(--blue)}
+/* REPORT */
+.report-table{width:100%;border-collapse:collapse;font-size:.82rem;margin:8px 0}
+.report-table th{color:#fff;background:var(--blue);padding:6px 8px;text-align:left;font-size:.72rem}
+.report-table td{padding:5px 8px;border:1px solid var(--line);vertical-align:top}
+.report-footer{text-align:center;color:var(--muted);font-size:.72rem;margin-top:12px}
+/* RESPONSIVE */
 @media(max-width:900px){
-.app{display:block;height:auto;padding:4px}
-.stage{height:55dvh;min-height:340px}
-.panel{margin-top:4px;max-height:none;overflow:visible}
-.row,.row3{grid-template-columns:1fr 1fr}
-header{position:sticky;top:0;z-index:5}
-.theme-bar select{font-size:10px}
+.app{display:block;height:auto}.stage{height:50dvh;min-height:320px}.panel{margin-top:4px;max-height:none;overflow:visible}
+.topbar{grid-template-columns:1fr}.toolbar{justify-content:flex-start;max-width:none}
+.question-grid{grid-template-columns:1fr}.test-form{grid-template-columns:1fr 1fr}.mode-tabs{grid-template-columns:repeat(2,1fr)}
 }
-@media print{header,.panel,.tools,.print-btn{display:none!important}.app{display:block;height:auto}.stage{border:none;height:100vh}canvas{height:100vh}}
+@media print{
+.toolbar,.mode-tabs,.canvas-tools,.panel,.no-print{display:none!important}.app{display:block;height:auto}.stage{border:none;height:100vh;page-break-after:always}
+canvas{height:100vh}.report-table{font-size:10px}.shell{width:100%;padding:0}
+}
+/* MISC */
+.footer{padding:20px 0 8px;color:var(--muted);text-align:center;font-weight:800;font-size:.78rem}
+.student-report{display:grid;gap:8px}
 </style>
 </head>
 <body>
-<header>
-<h1>⚡ Campo Eléctrico I</h1>
-<div class="sub">Cargas puntuales · Coordenadas · Simetrías · Profesor Wong</div>
-<div class="theme-bar">
+<div class="shell">
+<header class="topbar">
+<div class="hero-copy">
+<p class="eyebrow" data-i18n="eyebrow">Laboratorio interactivo de Campo Eléctrico</p>
+<h1 data-i18n="title">Campo Eléctrico I</h1>
+<p class="subtitle" data-i18n="subtitle">Cargas puntuales, coordenadas, simetrías, equipotenciales, zoom y carga de prueba · Profesor Wong</p>
+</div>
+<div class="toolbar">
+<label class="mode-control"><span data-i18n="style">Tema</span>
 <select id="themeSel">
 <option value="">Classic</option>
 <option value="Theme--blackboard">Blackboard</option>
 <option value="Theme--davinci">Da Vinci</option>
 <option value="Theme--dark">Dark</option>
+</select></label>
+<label class="mode-control"><span data-i18n="modeColor">Modo Color</span>
+<input id="modeSlider" type="range" min="0" max="100" value="100"></label>
+<label class="mode-control mobile-toggle"><span data-i18n="mobile">Móvil</span>
+<span class="switch-row">
+<input id="mobileToggle" type="checkbox"><span class="switch-track"></span>
+<span class="switch-state" id="mobileState">OFF</span>
+</span></label>
+<select id="langSelect" style="min-height:36px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);font-weight:900;font-size:.78rem;padding:0 8px">
+<option value="es">Español</option>
+<option value="en">English</option>
 </select>
-<label>🌓<input id="modeSlider" type="range" min="0" max="100" value="100"></label>
+<button class="btn primary" id="printBtn" type="button">🖨️</button>
 </div>
 </header>
+
+<nav class="mode-tabs">
+<button class="mode-tab active" data-mode="sim" data-i18n="tabSim">🔬 Simulación</button>
+<button class="mode-tab" data-mode="practice" data-i18n="tabPractice">📖 Práctica</button>
+<button class="mode-tab" data-mode="test" data-i18n="tabTest">✏️ Test</button>
+<button class="mode-tab" data-mode="prof" data-i18n="tabProf">👨‍🏫 Profesor</button>
+</nav>
+
+<!-- ===== SIMULATION MODE ===== -->
+<section id="simMode" class="mode-section">
 <div class="app">
 <section class="stage">
 <canvas id="cv"></canvas>
-<div class="tools">
-<button id="zin">Zoom +</button><button id="zout">Zoom −</button>
-<button id="fit">Ver todo</button><button id="center">Centrar</button>
+<div class="canvas-tools">
+<button id="zin">🔍+</button><button id="zout">🔍−</button>
+<button id="fit">⊡ Ver todo</button><button id="center">⌖ Centrar</button>
+<button id="undoBtn" data-i18n="undo">↩</button>
 </div>
-<div class="print-btn"><button onclick="window.print()">🖨️ Imprimir</button></div>
+<div class="canvas-badge">
+<select id="chargeLineType" style="font-size:9px;padding:2px;min-height:auto;width:auto">
+<option value="">── Carga individual</option>
+<option value="line">━━ Línea de cargas</option>
+<option value="semi">◠ Semicírculo</option>
+</select>
+<select id="chargeLineSign" style="font-size:9px;padding:2px;min-height:auto;width:auto">
+<option value="both">± Ambas</option>
+<option value="pos">+ Positivas</option>
+<option value="neg">− Negativas</option>
+</select>
+<button class="mini-btn" id="placeLineBtn" data-i18n="placeLine">Colocar</button>
+</div>
 </section>
 <aside class="panel">
 <div class="sec">
-<h3>👁️ Visualización</h3>
-<label class="check"><input id="showTest" type="checkbox" checked> Carga prueba</label>
-<label class="check"><input id="vec" type="checkbox" checked> Vectores</label>
-<label class="check"><input id="lin" type="checkbox" checked> Líneas campo</label>
-<p class="mini">Arrastra cargas con el mouse/dedo</p>
+<h3>👁️ <span data-i18n="vizTitle">Visualización</span></h3>
+<label class="check"><input id="chkTest" type="checkbox" checked> <span data-i18n="showTest">Carga prueba</span></label>
+<label class="check"><input id="chkVectors" type="checkbox" checked> <span data-i18n="showVectors">Vectores E</span></label>
+<label class="check"><input id="chkLines" type="checkbox" checked> <span data-i18n="showLines">Líneas campo</span></label>
+<label class="check"><input id="chkEqui" type="checkbox"> <span data-i18n="showEqui">Equipotenciales</span></label>
 </div>
 <div class="sec">
-<h3>📐 Plantillas</h3>
+<h3>📐 <span data-i18n="templates">Plantillas</span></h3>
 <div class="row">
-<label>Forma<select id="shape">
+<label><span data-i18n="shape">Figura</span><select id="shapeSel">
 <option value="square">Cuadrado</option>
 <option value="rect">Rectángulo</option>
-<option value="poly">Polígono</option>
+<option value="triang">Triángulo</option>
+<option value="rhombus">Rombo</option>
+<option value="hexagon">Hexágono</option>
+<option value="poly">Polígono regular</option>
 <option value="circle">Círculo</option>
 </select></label>
-<label>N<input id="ncharges" type="number" min="3" max="12" value="6"></label>
+<label><span data-i18n="nc">N</span><input id="ncharges" type="number" min="3" max="12" value="6"></label>
 </div>
 <div class="row">
-<label>Rx<input id="rx" type="number" min="1" max="10" value="4" step="0.5"></label>
-<label>Ry<input id="ry" type="number" min="1" max="10" value="4" step="0.5"></label>
+<label><span data-i18n="rx">Rx</span><input id="rx" type="number" min="1" max="10" value="4" step="0.5"></label>
+<label><span data-i18n="ry">Ry</span><input id="ry" type="number" min="1" max="10" value="4" step="0.5"></label>
 </div>
-<button id="makeShape">Crear simetría</button>
+<button id="makeShapeBtn" class="btn sm primary" data-i18n="createSym">Crear simetría</button>
 </div>
 <div class="sec">
-<h3>🔵 Carga prueba</h3>
+<h3>🔵 <span data-i18n="testCharge">Carga prueba</span></h3>
 <div class="row3">
-<label>q µC<input id="qt" type="number" value="1" step="0.1"></label>
-<label>x<input id="tx" type="number" value="0" step="1"></label>
-<label>y<input id="ty" type="number" value="0" step="1"></label>
+<label><span>q (µC)</span><input id="tq" type="number" value="1" step="0.1"></label>
+<label><span>x</span><input id="tx" type="number" value="0" step="1"></label>
+<label><span>y</span><input id="ty" type="number" value="0" step="1"></label>
 </div>
 </div>
 <div class="sec">
-<h3>📊 Resultados</h3>
-<div class="metric"><span>|E|</span><span id="em">0</span></div>
-<div class="metric"><span>Ex</span><span id="ex">0</span></div>
-<div class="metric"><span>Ey</span><span id="ey">0</span></div>
-<div class="metric"><span>|F|</span><span id="fm">0</span></div>
-<div class="metric"><span>Dirección</span><span id="ang">0°</span></div>
+<h3>📊 <span data-i18n="results">Resultados</span></h3>
+<div class="metric"><span>|E|</span><span id="eMag">0</span></div>
+<div class="metric"><span>Ex</span><span id="eEx">0</span></div>
+<div class="metric"><span>Ey</span><span id="eEy">0</span></div>
+<div class="metric"><span>|F|</span><span id="eF">0</span></div>
+<div class="metric"><span data-i18n="dir">Dirección</span><span id="eAng">0°</span></div>
 </div>
 <div class="sec">
-<h3>⚡ Cargas fuente <span id="chargeCount" style="font-weight:400;font-size:10px"></span></h3>
-<div id="list"></div>
-<div style="display:flex;gap:3px;flex-wrap:wrap">
-<button id="addp">+ carga</button>
-<button id="addn">− carga</button>
-<button id="del">Quitar</button>
-<button id="reset">Reiniciar</button>
+<h3>⚡ <span data-i18n="sourceCharges">Cargas fuente</span> <span id="chargeCount" style="font-weight:400;font-size:9px"></span></h3>
+<div id="chargeList"></div>
+<div style="display:flex;gap:3px;flex-wrap:wrap;margin-top:4px">
+<button class="btn sm primary" id="addPos">+ <span data-i18n="charge">carga</span></button>
+<button class="btn sm red" id="addNeg">− <span data-i18n="charge">carga</span></button>
+<button class="btn sm" id="delCharge" data-i18n="remove">Quitar</button>
+<button class="btn sm" id="resetBtn" data-i18n="reset">Reiniciar</button>
 </div>
 </div>
 </aside>
 </div>
+</section>
+
+<!-- ===== PRACTICE MODE ===== -->
+<section id="practiceMode" class="mode-section hidden">
+<div class="card">
+<h2 style="margin:0 0 8px;color:var(--blue);font-size:1.1rem" data-i18n="practiceTitle">Modo Práctica — Aprende paso a paso</h2>
+<div id="practiceSteps"></div>
+<div style="display:flex;gap:8px;margin-top:12px">
+<button class="btn" id="pracPrev" disabled data-i18n="prev">← Anterior</button>
+<button class="btn primary" id="pracNext" data-i18n="next">Siguiente →</button>
+<button class="btn" id="pracReset" data-i18n="reset">Reiniciar</button>
+</div>
+</div>
+</section>
+
+<!-- ===== TEST MODE ===== -->
+<section id="testMode" class="mode-section hidden">
+<div class="card">
+<h2 style="margin:0 0 8px;color:var(--blue);font-size:1.1rem" data-i18n="testTitle">Modo Test — Autoevaluación</h2>
+<div class="test-form">
+<label><span data-i18n="lastName">Apellido</span><input id="tLastName" type="text"></label>
+<label><span data-i18n="firstName">Nombre</span><input id="tFirstName" type="text"></label>
+<label><span data-i18n="email">Correo</span><input id="tEmail" type="email"></label>
+<label><span data-i18n="paralelo">Paralelo</span><input id="tParalelo" type="text"></label>
+</div>
+<div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+<button class="btn primary" id="testGenBtn">🎲 <span data-i18n="genTest">Generar Test</span></button>
+</div>
+<div id="testInfo" class="hidden" style="font-size:.82rem;color:var(--muted);margin-bottom:8px"></div>
+<div id="testQuestions"></div>
+<div style="display:flex;gap:8px;margin:12px 0;flex-wrap:wrap">
+<button class="btn primary" id="testSubmitBtn" data-i18n="grade">✅ Calificar</button>
+<button class="btn green hidden" id="testPrintReport">🖨️ <span data-i18n="printReport">Imprimir reporte</span></button>
+</div>
+<div id="testResult" class="hidden">
+<div class="score-box">
+<strong id="testScore">0/10</strong>
+<div class="score-detail" id="testGrade"></div>
+</div>
+<div id="testSolutions"></div>
+</div>
+</div>
+</section>
+
+<!-- ===== PROFESSOR MODE ===== -->
+<section id="profMode" class="mode-section hidden">
+<div class="card">
+<h2 style="margin:0 0 8px;color:var(--blue);font-size:1.1rem" data-i18n="profTitle">Modo Profesor — Registro de tests</h2>
+<div class="prof-form" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px">
+<label><span data-i18n="studentName">Estudiante</span><input id="pName" type="text"></label>
+<label><span>ID</span><input id="pId" type="text"></label>
+<label><span data-i18n="date">Fecha</span><input id="pDate" type="date"></label>
+<label><span data-i18n="notes">Notas</span><input id="pNotes" type="text"></label>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button class="btn primary" id="profSaveBtn">💾 <span data-i18n="saveSession">Guardar</span></button>
+<button class="btn green" id="profExportBtn">📥 <span data-i18n="exportCSV">Exportar CSV</span></button>
+<button class="btn red" id="profClearBtn">🗑️ <span data-i18n="clear">Limpiar</span></button>
+</div>
+<h3 style="margin-top:14px;font-size:.9rem" data-i18n="sessions">Sesiones guardadas</h3>
+<div id="profSessions"><p style="color:var(--muted);padding:8px;font-size:.82rem" data-i18n="noSessions">No hay sesiones guardadas.</p></div>
+</div>
+</section>
+
+<footer class="footer"><p>Om Sai Ram · (c) Copyright 2026 · JORGE ROBLERO WONG · Campo Eléctrico I</p></footer>
+</div>
 
 <script>
-// === THEME ENGINE ===
-const themeSel=document.getElementById('themeSel'),modeSlider=document.getElementById('modeSlider');
-let modeVal=100;
-function applyTheme(){
-  const t=themeSel.value;
-  document.documentElement.className=t;
-  if(t==='Theme--dark'){
-    const v=modeSlider.value/100;
-    const light=Math.round(10+v*10);
-    document.querySelector('html').style.setProperty('--bg',`rgb(${light},${light},${light})`);
-    document.querySelector('html').style.setProperty('--card',`rgb(${light+8},${light+8},${light+8})`);
-    document.querySelector('html').style.setProperty('--canvas-bg',`rgb(${light-3},${light-3},${light-3})`);
-  }else if(t==='Theme--blackboard'){
-    const v=modeSlider.value/100;
-    const b=Math.round(26+v*8);
-    document.querySelector('html').style.setProperty('--bg',`rgb(26,${b+5},${b+20})`);
-    document.querySelector('html').style.setProperty('--card',`rgb(36,${b+15},${b+30})`);
-  }else if(t==='Theme--davinci'){
-    const v=modeSlider.value/100;
-    document.querySelector('html').style.setProperty('--bg',`rgb(${43-v*10},${31-v*8},${14})`);
-  }else{
-    document.querySelector('html').style.setProperty('--bg','');
-    document.querySelector('html').style.setProperty('--card','');
-    document.querySelector('html').style.setProperty('--canvas-bg','');
-  }
-}
-themeSel.onchange=applyTheme;
-modeSlider.oninput=()=>{modeVal=modeSlider.value;applyTheme()};
+//=== i18n ===
+const STR={es:{eyebrow:"Laboratorio interactivo de Campo Eléctrico",title:"Campo Eléctrico I",subtitle:"Cargas puntuales, coordenadas, simetrías, equipotenciales, zoom y carga de prueba · Profesor Wong",
+style:"Tema",modeColor:"Modo Color",mobile:"Móvil",showTest:"Carga prueba",showVectors:"Vectores E",showLines:"Líneas campo",showEqui:"Equipotenciales",
+templates:"Plantillas",shape:"Figura",nc:"N",rx:"Rx",ry:"Ry",createSym:"Crear simetría",testCharge:"Carga prueba",results:"Resultados",dir:"Dirección",
+sourceCharges:"Cargas fuente",charge:"carga",remove:"Quitar",reset:"Reiniciar",undo:"↩ Deshacer",
+tabSim:"🔬 Simulación",tabPractice:"📖 Práctica",tabTest:"✏️ Test",tabProf:"👨‍🏫 Profesor",
+practiceTitle:"Modo Práctica — Aprende paso a paso",
+vizTitle:"Visualización",
+testTitle:"Modo Test — Autoevaluación",lastName:"Apellido",firstName:"Nombre",email:"Correo",paralelo:"Paralelo",genTest:"Generar Test",
+grade:"✅ Calificar",printReport:"Imprimir reporte",
+profTitle:"Modo Profesor — Registro de tests",studentName:"Estudiante",date:"Fecha",notes:"Notas",
+saveSession:"Guardar",exportCSV:"Exportar CSV",clear:"Limpiar",sessions:"Sesiones guardadas",noSessions:"No hay sesiones guardadas.",
+prev:"← Anterior",next:"Siguiente →",placeLine:"Colocar",
+// Practice steps
+ps0t:"¿Qué es el campo eléctrico?",ps0:"El campo eléctrico E es una magnitud vectorial que describe la fuerza por unidad de carga en cada punto del espacio. E = F/q₀. Se mide en N/C o V/m.",
+ps1t:"1. Ley de Coulomb",ps1:"La fuerza entre dos cargas puntuales es F = k·q₁·q₂/r². El campo de una carga puntual es E = k·q/r² en dirección radial. k = 8.9876×10⁹ N·m²/C².",
+ps2t:"2. Campo de múltiples cargas",ps2:"El campo total en un punto es la suma vectorial de los campos de cada carga: E_total = Σ k·qᵢ/rᵢ²·r̂ᵢ (principio de superposición).",
+ps3t:"3. Carga de prueba",ps3:"Una carga de prueba q₀ experimenta una fuerza F = q₀·E. Por convención, la carga de prueba es positiva (q₀ > 0).",
+ps4t:"4. Líneas de campo",ps4:"Las líneas de campo son tangentes a E en cada punto. Salen de cargas positivas y entran a negativas. La densidad de líneas indica la intensidad.",
+ps5t:"5. Superficies equipotenciales",ps5:"Son superficies donde el potencial es constante. Son perpendiculares a las líneas de campo. V = k·q/r para una carga puntual.",
+ps6t:"6. Dipolo eléctrico",ps6:"Un dipolo son dos cargas iguales de signo opuesto separadas por una distancia d. El campo en la bisectriz es E = k·p/r³ donde p = q·d.",
+ps7t:"7. Simetrías y configuraciones",ps7:"Para configuraciones simétricas (cuadrado, hexágono, anillo), el campo total en el centro es la suma vectorial de las contribuciones individuales.",
+ps8t:"8. Aplicaciones",ps8:"El campo eléctrico se usa en blindaje electrostático (jaula de Faraday), capacitores, tubos de rayos catódicos, y aceleradores de partículas.",
+// Test
+testDesc:"Responde las 10 preguntas numéricas. 7 preguntas difíciles (2 pts c/u) y 3 normales (1 pt c/u). Total 17 pts.",
+qNormal:"Normal",qHard:"Difícil",
+scoreLabel:"Calificación",correct:"✓ Correcto",wrong:"✗ Incorrecto",
+solTitle:"Soluciones paso a paso",
+// Prof
+saveOk:"Sesión guardada.",clearConfirm:"¿Limpiar todo el historial?",csvExport:"Datos exportados.",
+// Errors
+errFill:"Complete todos los campos.",errGen:"Error al generar test."
+},
+en:{eyebrow:"Electric Field Interactive Lab",title:"Electric Field I",subtitle:"Point charges, coordinates, symmetries, equipotentials, zoom and test charge · Professor Wong",
+style:"Theme",modeColor:"Mode Color",mobile:"Mobile",showTest:"Test charge",showVectors:"E vectors",showLines:"Field lines",showEqui:"Equipotentials",
+templates:"Templates",shape:"Shape",nc:"N",rx:"Rx",ry:"Ry",createSym:"Create symmetry",testCharge:"Test charge",results:"Results",dir:"Direction",
+sourceCharges:"Source charges",charge:"charge",remove:"Remove",reset:"Reset",undo:"↩ Undo",
+tabSim:"🔬 Simulation",tabPractice:"📖 Practice",tabTest:"✏️ Test",tabProf:"👨‍🏫 Professor",
+practiceTitle:"Practice Mode — Step by Step",
+vizTitle:"Visualization",
+testTitle:"Test Mode — Self-Assessment",lastName:"Last name",firstName:"First name",email:"Email",paralelo:"Section",genTest:"Generate Test",
+grade:"✅ Grade",printReport:"Print report",
+profTitle:"Professor Mode — Test Records",studentName:"Student",date:"Date",notes:"Notes",
+saveSession:"Save",exportCSV:"Export CSV",clear:"Clear",sessions:"Saved sessions",noSessions:"No saved sessions.",
+prev:"← Previous",next:"Next →",placeLine:"Place",
+ps0t:"What is electric field?",ps0:"The electric field E is a vector quantity that describes the force per unit charge at each point in space. E = F/q₀. Units: N/C or V/m.",
+ps1t:"1. Coulomb's Law",ps1:"Force between two point charges: F = k·q₁·q₂/r². Field of a point charge: E = k·q/r² radially. k = 8.9876×10⁹ N·m²/C².",
+ps2t:"2. Multiple charge fields",ps2:"Total field is the vector sum of each charge's field: E_total = Σ k·qᵢ/rᵢ²·r̂ᵢ (superposition principle).",
+ps3t:"3. Test charge",ps3:"A test charge q₀ experiences force F = q₀·E. By convention, test charges are positive (q₀ > 0).",
+ps4t:"4. Field lines",ps4:"Field lines are tangent to E at every point. They originate from positive charges and terminate on negative charges.",
+ps5t:"5. Equipotential surfaces",ps5:"Surfaces of constant potential, perpendicular to field lines. V = k·q/r for a point charge.",
+ps6t:"6. Electric dipole",ps6:"Two equal opposite charges separated by distance d. Field on perpendicular bisector: E = k·p/r³ where p = q·d.",
+ps7t:"7. Symmetries and configurations",ps7:"For symmetric configurations (square, hexagon, ring), the total field at center is the vector sum of individual contributions.",
+ps8t:"8. Applications",ps8:"Electric field is used in electrostatic shielding (Faraday cage), capacitors, cathode ray tubes, and particle accelerators.",
+testDesc:"Answer 10 numerical questions. 7 hard (2 pts each) and 3 normal (1 pt each). Total 17 pts.",
+qNormal:"Normal",qHard:"Hard",
+scoreLabel:"Grade",correct:"✓ Correct",wrong:"✗ Incorrect",
+solTitle:"Step-by-step solutions",
+saveOk:"Session saved.",clearConfirm:"Clear all history?",csvExport:"Data exported.",
+errFill:"Fill all fields.",errGen:"Error generating test."}};
 
-// === CANVAS ENGINE ===
-const cv=document.getElementById('cv'),ctx=cv.getContext('2d'),k=8.9875517923e9,mpp=.01;
+let LANG='es';function T(k){return STR[LANG]&&STR[LANG][k]||STR.es[k]||k}
+//=== LANGUAGE ===
+document.getElementById('langSelect').onchange=function(){LANG=this.value;applyI18n();renderPractice();};
+function applyI18n(){
+ document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(T(k))el.textContent=el.dataset.i18nOrg||el.textContent;});
+}
+//=== THEMES ===
+const themeSel=document.getElementById('themeSel'),modeSlider=document.getElementById('modeSlider');
+themeSel.onchange=function(){document.documentElement.className=this.value;};
+modeSlider.oninput=function(){
+ const v=this.value/100;
+ const t=themeSel.value;
+ if(t==='Theme--dark'){const l=Math.round(10+v*10);setProp('--bg',`rgb(${l},${l},${l})`);setProp('--card',`rgb(${l+8},${l+8},${l+8})`);setProp('--canvas-bg',`rgb(${l-3},${l-3},${l-3})`)}
+ else if(t==='Theme--blackboard'){const b=Math.round(26+v*8);setProp('--bg',`rgb(26,${b+5},${b+20})`);setProp('--card',`rgb(36,${b+15},${b+30})`)}
+ else if(t==='Theme--davinci'){setProp('--bg',`rgb(${43-v*10},${31-v*8},14)`)}
+ else{['--bg','--card','--canvas-bg'].forEach(k=>document.querySelector('html').style.removeProperty(k))}
+};
+function setProp(k,v){document.querySelector('html').style.setProperty(k,v)}
+//=== MOBILE TOGGLE ===
+document.getElementById('mobileToggle').onchange=function(){
+ document.body.classList.toggle('mobile-layout',this.checked);
+ document.getElementById('mobileState').textContent=this.checked?'ON':'OFF';
+};
+//=== CANVAS ENGINE ===
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+const kC=8.9875517923e9,mpp=0.01;
 let dpr=1,drag=null,C=[],T={x:0,y:0,q:1};
-let view={x:0,y:0,s:1};
+let view={x:0,y:0,s:1},history=[];
 function D(){return{w:cv.width/dpr,h:cv.height/dpr}}
 function W(px,py){return{x:(px-D().w/2)/view.s-view.x,y:(py-D().h/2)/view.s-view.y}}
 function S(x,y){return{x:(x+view.x)*view.s+D().w/2,y:(y+view.y)*view.s+D().h/2}}
 function resetAll(){
-  C=[{id:1,x:-160,y:-80,q:4},{id:2,x:160,y:-80,q:-3},{id:3,x:0,y:150,q:-2}];
-  T={x:0,y:0,q:+qt.value||1};
-  view={x:0,y:0,s:1};syncTest();render();draw();chargeCount.textContent='('+C.length+')'
+ C=[{id:1,x:-160,y:-80,q:4},{id:2,x:160,y:-80,q:-3},{id:3,x:0,y:150,q:-2}];
+ T={x:0,y:0,q:+document.getElementById('tq').value||1};
+ view={x:0,y:0,s:1};history=[];syncTest();render();draw();updCount()
 }
 function resize(){
-  dpr=devicePixelRatio||1;
-  let r=cv.getBoundingClientRect();
-  cv.width=Math.max(320,Math.floor(r.width*dpr));
-  cv.height=Math.max(320,Math.floor(r.height*dpr));
-  ctx.setTransform(dpr,0,0,dpr,0,0);draw()
+ dpr=devicePixelRatio||1;let r=cv.getBoundingClientRect();
+ cv.width=Math.max(320,Math.floor(r.width*dpr));cv.height=Math.max(320,Math.floor(r.height*dpr));
+ ctx.setTransform(dpr,0,0,dpr,0,0);draw()
 }
 function field(x,y){
-  let ex=0,ey=0;
-  for(const c of C){let dx=x-c.x,dy=y-c.y,r=Math.max(Math.hypot(dx,dy),18),rm=r*mpp,e=k*c.q*1e-6/(rm*rm);ex+=e*dx/r;ey+=e*dy/r}
-  return{ex,ey,mag:Math.hypot(ex,ey),a:Math.atan2(ey,ex)}
+ let ex=0,ey=0;
+ for(const c of C){let dx=x-c.x,dy=y-c.y,r=Math.max(Math.hypot(dx,dy),18),rm=r*mpp,e=kC*c.q*1e-6/(rm*rm);ex+=e*dx/r;ey+=e*dy/r}
+ return{ex,ey,mag:Math.hypot(ex,ey),a:Math.atan2(ey,ex)}
+}
+function potential(x,y){
+ let v=0;
+ for(const c of C){let r=Math.max(Math.hypot(x-c.x,y-c.y),18);v+=kC*c.q*1e-6/(r*mpp)}
+ return v
 }
 function sci(v,u){return(!isFinite(v)||Math.abs(v)<1e-9?'0':v.toExponential(2).replace('e+','×10^'))+' '+u}
 function arrow(x1,y1,x2,y2,c,w){
-  let a=Math.atan2(y2-y1,x2-x1);
-  ctx.strokeStyle=ctx.fillStyle=c;ctx.lineWidth=w||2;
-  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-9*Math.cos(a-.5),y2-9*Math.sin(a-.5));
-  ctx.lineTo(x2-9*Math.cos(a+.5),y2-9*Math.sin(a+.5));ctx.closePath();ctx.fill()
+ let a=Math.atan2(y2-y1,x2-x1);
+ ctx.strokeStyle=ctx.fillStyle=c;ctx.lineWidth=w||2;
+ ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+ ctx.beginPath();ctx.moveTo(x2-9*Math.cos(a-.5),y2-9*Math.sin(a-.5));
+ ctx.lineTo(x2-9*Math.cos(a+.5),y2-9*Math.sin(a+.5));ctx.closePath();ctx.fill()
 }
 function drawCharge(c,t){
-  let p=S(c.x,c.y),r=(t?18:23)*Math.max(.65,Math.min(1.25,view.s));
-  ctx.fillStyle=t?'var(--green,#16773a)':c.q>=0?'var(--red,#e43622)':'var(--accent,#0f55aa)';
-  ctx.beginPath();ctx.arc(p.x,p.y,r,0,7);ctx.fill();
-  ctx.lineWidth=3;ctx.strokeStyle='var(--border,#111)';ctx.stroke();
-  ctx.fillStyle='#fff';ctx.font='bold '+Math.max(14,20*view.s)+'px Arial';
-  ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(t?'t':c.q>=0?'+':'−',p.x,p.y);
-  ctx.fillStyle='var(--text,#111)';ctx.font='bold 11px Arial';ctx.fillText(t?'prueba':c.id,p.x,p.y+r+12)
+ let p=S(c.x,c.y),r=(t?18:23)*Math.max(.65,Math.min(1.25,view.s));
+ ctx.fillStyle=t?'var(--test,#16773a)':c.q>=0?'var(--positive,#e43622)':'var(--negative,#0f55aa)';
+ ctx.beginPath();ctx.arc(p.x,p.y,r,0,7);ctx.fill();
+ ctx.lineWidth=2;ctx.strokeStyle='var(--ink,#111)';ctx.stroke();
+ ctx.fillStyle='#fff';ctx.font='bold '+Math.max(13,18*view.s)+'px Arial';
+ ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(t?'t':c.q>=0?'+':'−',p.x,p.y);
+ ctx.fillStyle='var(--ink,#111)';ctx.font='bold 10px Arial';ctx.fillText(t?'prueba':c.id,p.x,p.y+r+10)
 }
 function drawVectors(){
-  let d=D();
-  for(let py=65;py<d.h-20;py+=62)for(let px=35;px<d.w-20;px+=62){
-    let w=W(px,py),e=field(w.x,w.y),L=12+Math.min(25,Math.log10(e.mag+1)*3);
-    arrow(px-Math.cos(e.a)*L/2,py-Math.sin(e.a)*L/2,px+Math.cos(e.a)*L/2,py+Math.sin(e.a)*L/2,'rgba(15,85,170,.6)',1.3)
-  }
+ let d=D();
+ for(let py=55;py<d.h-15;py+=55)for(let px=30;px<d.w-15;px+=55){
+  let w=W(px,py),e=field(w.x,w.y),L=10+Math.min(22,Math.log10(e.mag+1)*3);
+  arrow(px-Math.cos(e.a)*L/2,py-Math.sin(e.a)*L/2,px+Math.cos(e.a)*L/2,py+Math.sin(e.a)*L/2,'rgba(15,85,170,.55)',1.2)
+ }
 }
 function trace(x,y,s,col){
-  let a;ctx.strokeStyle=col;ctx.globalAlpha=.42;ctx.beginPath();
-  let p=S(x,y);ctx.moveTo(p.x,p.y);
-  for(let i=0;i<110;i++){let e=field(x,y);a=e.a+(s<0?Math.PI:0);
-    x+=Math.cos(a)*7/view.s;y+=Math.sin(a)*7/view.s;p=S(x,y);ctx.lineTo(p.x,p.y)}
-  ctx.stroke();ctx.globalAlpha=1
+ ctx.strokeStyle=col;ctx.globalAlpha=.38;ctx.beginPath();
+ let p=S(x,y);ctx.moveTo(p.x,p.y);
+ for(let i=0;i<100;i++){let e=field(x,y),a=e.a+(s<0?Math.PI:0);
+  x+=Math.cos(a)*6/view.s;y+=Math.sin(a)*6/view.s;p=S(x,y);ctx.lineTo(p.x,p.y)}
+ ctx.stroke();ctx.globalAlpha=1
 }
 function drawLines(){
-  for(const c of C)for(let i=0;i<14;i++){let a=2*Math.PI*i/14;
-    trace(c.x+Math.cos(a)*24,c.y+Math.sin(a)*24,c.q>=0?1:-1,c.q>=0?'var(--red,#e43622)':'var(--accent,#0f55aa)')}
+ for(const c of C)for(let i=0;i<12;i++){let a=2*Math.PI*i/12;
+  trace(c.x+Math.cos(a)*22,c.y+Math.sin(a)*22,c.q>=0?1:-1,c.q>=0?'var(--positive,#e43622)':'var(--negative,#0f55aa)')}
+}
+function drawEqui(){
+ let d=D();ctx.globalAlpha=.55;
+ for(let n=1;n<=8;n++){
+  let vLevel=5000*n;ctx.beginPath();
+  for(let i=0;i<=360;i+=6){
+   let a=i*Math.PI/180,found=false;
+   for(let r=5;r<500;r+=2){
+    let x=r*Math.cos(a),y=r*Math.sin(a);
+    if(Math.abs(potential(x,y)-vLevel)<vLevel*0.08){let p=S(x,y);i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y);found=true;break}
+   }
+   if(!found)ctx.closePath()
+  }
+  ctx.strokeStyle=n%2===0?'var(--gold,#c98b2b)':'var(--green,#28795b)';ctx.lineWidth=1.2;ctx.stroke()
+ }
+ ctx.globalAlpha=1
 }
 function draw(){
-  let d=D();ctx.clearRect(0,0,d.w,d.h);
-  if(lin.checked)drawLines();
-  if(vec.checked)drawVectors();
-  C.forEach(c=>drawCharge(c,false));
-  T.q=+qt.value||0;
-  if(showTest.checked){drawCharge(T,true);
-    let e=field(T.x,T.y),p=S(T.x,T.y),L=Math.min(95,18+Math.log10(e.mag+1)*8);
-    arrow(p.x,p.y,p.x+Math.cos(e.a)*L,p.y+Math.sin(e.a)*L,'var(--green,#16773a)',4)}
-  let e=field(T.x,T.y),f=Math.abs(T.q*1e-6)*e.mag;
-  em.textContent=sci(e.mag,'N/C');ex.textContent=sci(e.ex,'N/C');
-  ey.textContent=sci(e.ey,'N/C');fm.textContent=sci(f,'N');
-  ang.textContent=((e.a*180/Math.PI+360)%360).toFixed(1)+'°';syncTest(false)
+ let d=D();ctx.clearRect(0,0,d.w,d.h);
+ if(document.getElementById('chkLines').checked)drawLines();
+ if(document.getElementById('chkEqui').checked)drawEqui();
+ if(document.getElementById('chkVectors').checked)drawVectors();
+ C.forEach(c=>drawCharge(c,false));
+ T.q=+document.getElementById('tq').value||0;
+ if(document.getElementById('chkTest').checked){
+  drawCharge(T,true);
+  let e=field(T.x,T.y),p=S(T.x,T.y),L=Math.min(85,16+Math.log10(e.mag+1)*7);
+  arrow(p.x,p.y,p.x+Math.cos(e.a)*L,p.y+Math.sin(e.a)*L,'var(--test,#16773a)',3.5)
+ }
+ let e=field(T.x,T.y),f=Math.abs(T.q*1e-6)*e.mag;
+ document.getElementById('eMag').textContent=sci(e.mag,'N/C');
+ document.getElementById('eEx').textContent=sci(e.ex,'N/C');
+ document.getElementById('eEy').textContent=sci(e.ey,'N/C');
+ document.getElementById('eF').textContent=sci(f,'N');
+ document.getElementById('eAng').textContent=((e.a*180/Math.PI+360)%360).toFixed(1)+'°';
+ syncTest(false)
 }
 function syncTest(update){
-  if(update){T.x=+tx.value||0;T.y=+ty.value||0;T.q=+qt.value||0}
-  else{tx.value=Math.round(T.x);ty.value=Math.round(T.y)}
+ if(update){T.x=+document.getElementById('tx').value||0;T.y=+document.getElementById('ty').value||0;T.q=+document.getElementById('tq').value||0}
+ else{document.getElementById('tx').value=Math.round(T.x);document.getElementById('ty').value=Math.round(T.y)}
 }
 function render(){
-  list.innerHTML='';
-  C.forEach(c=>{
-    let div=document.createElement('div');div.className='card';
-    div.innerHTML='<b>Carga '+c.id+' <span class="'+(c.q>=0?'qpos':'qneg')+'">'+c.q.toFixed(1)+' µC</span></b>'+
-    '<div class="row3"><label>q<input data-id="'+c.id+'" data-k="q" type="number" step="0.1" value="'+c.q+'"></label>'+
-    '<label>x<input data-id="'+c.id+'" data-k="x" type="number" step="1" value="'+Math.round(c.x)+'"></label>'+
-    '<label>y<input data-id="'+c.id+'" data-k="y" type="number" step="1" value="'+Math.round(c.y)+'"></label></div>'+
-    '<input type="range" min="-10" max="10" step="0.1" value="'+c.q+'">';
-    div.querySelectorAll('input[data-id]').forEach(inp=>inp.oninput=()=>{
-      let cc=C.find(z=>z.id==inp.dataset.id);cc[inp.dataset.k]=+inp.value||0;render();draw()});
-    let rg=div.querySelector('input[type=range]');
-    rg.oninput=()=>{c.q=+rg.value;render();draw()};
-    list.appendChild(div)
+ const list=document.getElementById('chargeList');list.innerHTML='';
+ C.forEach(c=>{
+  let div=document.createElement('div');div.className='charge-card';
+  div.innerHTML='<b><span class="'+(c.q>=0?'qpos':'qneg')+'">'+c.q.toFixed(1)+' µC</span> @ ('+Math.round(c.x)+','+Math.round(c.y)+')</b>'+
+  '<div class="row4"><label>q<input data-id="'+c.id+'" data-k="q" type="number" step="0.1" value="'+c.q+'"></label>'+
+  '<label>x<input data-id="'+c.id+'" data-k="x" type="number" step="1" value="'+Math.round(c.x)+'"></label>'+
+  '<label>y<input data-id="'+c.id+'" data-k="y" type="number" step="1" value="'+Math.round(c.y)+'"></label>'+
+  '<label>◉<input data-id="'+c.id+'" data-k="range" type="range" min="-10" max="10" step="0.1" value="'+c.q+'"></label></div>';
+  div.querySelectorAll('input[data-k]').forEach(inp=>{
+   inp.oninput=()=>{let cc=C.find(z=>z.id==inp.dataset.id);if(inp.dataset.k==='range'){cc.q=+inp.value}else{cc[inp.dataset.k]=+inp.value||0};render();draw()}
   });
-  chargeCount.textContent='('+C.length+')'
+  list.appendChild(div)
+ });
+ updCount()
 }
+function saveHistory(){history.push(C.map(c=>({...c})));if(history.length>20)history.shift()}
+function undoLast(){if(history.length){C=history.pop();render();draw()} }
+function updCount(){document.getElementById('chargeCount').textContent='('+C.length+')'}
 function makeSym(){
-  let n=Math.max(3,Math.min(12,+ncharges.value||6)),sx=(+rx.value||4)*45,sy=(+ry.value||4)*45,typ=shape.value;C=[];
-  if(typ==='square'){C=[[-sx,-sx],[sx,-sx],[sx,sx],[-sx,sx]].map((p,i)=>({id:i+1,x:p[0],y:p[1],q:i%2?-2:2}))}
-  else if(typ==='rect'){C=[[-sx,-sy],[sx,-sy],[sx,sy],[-sx,sy]].map((p,i)=>({id:i+1,x:p[0],y:p[1],q:i%2?-2:2}))}
-  else{for(let i=0;i<n;i++){let a=-Math.PI/2+2*Math.PI*i/n;
-    C.push({id:i+1,x:Math.cos(a)*sx,y:Math.sin(a)*(typ==='circle'?sx:sy),q:i%2?-2:2})}}
-  T={x:0,y:0,q:+qt.value||1};fitAll();render();draw()
+ let n=Math.max(3,Math.min(12,+document.getElementById('ncharges').value||6));
+ let sx=(+document.getElementById('rx').value||4)*45,sy=(+document.getElementById('ry').value||4)*45;
+ let typ=document.getElementById('shapeSel').value;
+ saveHistory();let nC=[];
+ if(typ==='square'){nC=[[-sx,-sx],[sx,-sx],[sx,sx],[-sx,sx]].map((p,i)=>({id:i+1,x:p[0],y:p[1],q:i%2?-2:2}))}
+ else if(typ==='rect'){nC=[[-sx,-sy],[sx,-sy],[sx,sy],[-sx,sy]].map((p,i)=>({id:i+1,x:p[0],y:p[1],q:i%2?-2:2}))}
+ else if(typ==='triang'){
+  for(let i=0;i<3;i++){let a=-Math.PI/2+2*Math.PI*i/3;nC.push({id:i+1,x:Math.cos(a)*sx,y:Math.sin(a)*sx,q:i%2?-2:2})}
+ }else if(typ==='rhombus'){
+  nC=[[0,-sx*1.2],[sx,0],[0,sx*1.2],[-sx,0]].map((p,i)=>({id:i+1,x:p[0],y:p[1],q:i%2?-2:2}))
+ }else if(typ==='hexagon'){
+  for(let i=0;i<6;i++){let a=-Math.PI/2+2*Math.PI*i/6;nC.push({id:i+1,x:Math.cos(a)*sx,y:Math.sin(a)*sx,q:i%2?-2:2})}
+ }else{
+  for(let i=0;i<n;i++){let a=-Math.PI/2+2*Math.PI*i/n;
+   nC.push({id:i+1,x:Math.cos(a)*sx,y:Math.sin(a)*(typ==='circle'?sx:sy),q:i%2?-2:2})}
+ }
+ C=nC;T={x:0,y:0,q:+document.getElementById('tq').value||1};fitAll();render();draw()
+}
+function placeChargeLine(){
+ let typ=document.getElementById('chargeLineType').value;
+ let sign=document.getElementById('chargeLineSign').value;
+ if(typ==='')return;
+ let signFn=(s)=>{if(s==='both')return i=>i%2?2:-2;if(s==='pos')return()=>2;return()=>-2};
+ let getQ=signFn(sign);saveHistory();
+ let sx=45,startId=C.length+1;
+ if(typ==='line'){
+  for(let i=0;i<7;i++){let x=-135+i*45;C.push({id:startId+i,x,y:0,q:getQ(i)})}
+ }else if(typ==='semi'){
+  for(let i=0;i<9;i++){let a=Math.PI*(i/8);C.push({id:startId+i,x:Math.cos(a)*90,y:Math.sin(a)*90,q:getQ(i)})}
+ }
+ fitAll();render();draw()
 }
 function fitAll(){
-  let pts=[...C,T],minx=Math.min(...pts.map(p=>p.x)),maxx=Math.max(...pts.map(p=>p.x)),
-      miny=Math.min(...pts.map(p=>p.y)),maxy=Math.max(...pts.map(p=>p.y));
-  let d=D(),bw=Math.max(1,maxx-minx),bh=Math.max(1,maxy-miny);
-  view.s=Math.min(2.2,Math.max(.35,Math.min((d.w-90)/bw,(d.h-90)/bh)));
-  view.x=-(minx+maxx)/2;view.y=-(miny+maxy)/2;draw()
+ let pts=C.length?[...C,T]:[{x:0,y:0},{x:1,y:1}];
+ let minx=Math.min(...pts.map(p=>p.x)),maxx=Math.max(...pts.map(p=>p.x));
+ let miny=Math.min(...pts.map(p=>p.y)),maxy=Math.max(...pts.map(p=>p.y));
+ let d=D(),bw=Math.max(1,maxx-minx),bh=Math.max(1,maxy-miny);
+ view.s=Math.min(2.2,Math.max(.35,Math.min((d.w-80)/bw,(d.h-80)/bh)));
+ view.x=-(minx+maxx)/2;view.y=-(miny+maxy)/2;draw()
 }
-function pos(e){
-  let r=cv.getBoundingClientRect(),p=e.touches?e.touches[0]:e;
-  return{x:p.clientX-r.left,y:p.clientY-r.top}
-}
-function down(e){e.preventDefault();
-  let p=pos(e),all=showTest.checked?[...C,T]:C;
-  drag=all.find(c=>{let s=S(c.x,c.y);return Math.hypot(p.x-s.x,p.y-s.y)<38})}
-function move(e){if(!drag)return;e.preventDefault();
-  let p=pos(e),w=W(p.x,p.y);drag.x=w.x;drag.y=w.y;draw();render()}
-function up(){drag=null}
-cv.addEventListener('mousedown',down);
-addEventListener('mousemove',move);addEventListener('mouseup',up);
-cv.addEventListener('touchstart',down,{passive:false});
-addEventListener('touchmove',move,{passive:false});addEventListener('touchend',up);
-zin.onclick=()=>{view.s*=1.22;draw()};
-zout.onclick=()=>{view.s/=1.22;draw()};
-fit.onclick=fitAll;
-center.onclick=()=>{view.x=0;view.y=0;draw()};
-makeShape.onclick=makeSym;
-addp.onclick=()=>{C.push({id:C.length+1,x:0,y:0,q:2});render();draw();chargeCount.textContent='('+C.length+')'};
-addn.onclick=()=>{C.push({id:C.length+1,x:0,y:0,q:-2});render();draw();chargeCount.textContent='('+C.length+')'};
-del.onclick=()=>{C.pop();render();draw();chargeCount.textContent='('+C.length+')'};
-reset.onclick=resetAll;
-[qt,tx,ty,vec,lin,showTest].forEach(el=>el.oninput=el.onchange=()=>{syncTest();draw()});
+//=== EVENTS ===
+function pos(e){let r=cv.getBoundingClientRect(),p=e.touches?e.touches[0]:e;return{x:p.clientX-r.left,y:p.clientY-r.top}}
+function down(e){e.preventDefault();let p=pos(e),all=document.getElementById('chkTest').checked?[...C,T]:C;drag=all.find(c=>{let s=S(c.x,c.y);return Math.hypot(p.x-s.x,p.y-s.y)<35})}
+function move(e){if(!drag)return;e.preventDefault();let p=pos(e),w=W(p.x,p.y);drag.x=w.x;drag.y=w.y;draw();render()}
+function up(e){if(drag){saveHistory();drag=null} }
+cv.addEventListener('mousedown',down);addEventListener('mousemove',move);addEventListener('mouseup',up);
+cv.addEventListener('touchstart',down,{passive:false});addEventListener('touchmove',move,{passive:false});addEventListener('touchend',up);
+document.getElementById('zin').onclick=()=>{view.s*=1.25;draw()};
+document.getElementById('zout').onclick=()=>{view.s/=1.25;draw()};
+document.getElementById('fit').onclick=fitAll;
+document.getElementById('center').onclick=()=>{view.x=0;view.y=0;draw()};
+document.getElementById('makeShapeBtn').onclick=makeSym;
+document.getElementById('addPos').onclick=()=>{saveHistory();C.push({id:C.length+1,x:0,y:0,q:2});render();draw()};
+document.getElementById('addNeg').onclick=()=>{saveHistory();C.push({id:C.length+1,x:0,y:0,q:-2});render();draw()};
+document.getElementById('delCharge').onclick=()=>{if(C.length){saveHistory();C.pop();render();draw()}};
+document.getElementById('resetBtn').onclick=resetAll;
+document.getElementById('undoBtn').onclick=undoLast;
+document.getElementById('placeLineBtn').onclick=placeChargeLine;
+['tq','tx','ty','chkVectors','chkLines','chkTest','chkEqui'].forEach(id=>{
+ document.getElementById(id).oninput=document.getElementById(id).onchange=()=>{syncTest();draw()}
+});
 addEventListener('resize',resize);
+//=== PRACTICE MODE ===
+let pracIdx=0;
+function renderPractice(){
+ const steps=8;const cont=document.getElementById('practiceSteps');cont.innerHTML='';
+ for(let i=0;i<=steps;i++){
+  const div=document.createElement('div');div.className='charge-card'+(i===pracIdx?' style="border-color:var(--blue);"':'');
+  div.style.margin='6px 0';div.style.padding='8px 10px';
+  if(i===pracIdx)div.style.borderColor='var(--blue)';div.style.borderWidth='2px';
+  div.innerHTML='<b style="font-size:.85rem;color:'+(i===pracIdx?'var(--blue)':'var(--ink)')+'">'+(i===0?T('ps0t'):T('ps'+(i-1)+'t'))+'</b>'+
+   '<div style="font-size:.82rem;line-height:1.4;margin-top:4px;color:var(--muted)">'+(i===0?T('ps0'):T('ps'+(i-1)))+'</div>';
+  cont.appendChild(div)
+ }
+ document.getElementById('pracPrev').disabled=pracIdx===0;
+}
+document.getElementById('pracNext').onclick=()=>{if(pracIdx<8){pracIdx++;renderPractice()}};
+document.getElementById('pracPrev').onclick=()=>{if(pracIdx>0){pracIdx--;renderPractice()}};
+document.getElementById('pracReset').onclick=()=>{pracIdx=0;renderPractice()};
+//=== TEST ENGINE ===
+let testQuestions=[],testAnswers={};
+function genTest(){
+ const fn=document.getElementById('tFirstName').value.trim();
+ const ln=document.getElementById('tLastName').value.trim();
+ const em=document.getElementById('tEmail').value.trim();
+ const pa=document.getElementById('tParalelo').value.trim();
+ if(!fn||!ln||!em||!pa){alert(T('errFill'));return}
+ 
+ // Generate 10 questions: 3 normal (1pt) + 7 hard (2pt)
+ const shapes=['square','rect','triang','rhombus','hexagon','circle'];
+ const figs={square:'cuadrado',rect:'rectángulo',triang:'triángulo',rhombus:'rombo',hexagon:'hexágono',circle:'círculo'};
+ const figsEn={square:'square',rect:'rectangle',triang:'triangle',rhombus:'rhombus',hexagon:'hexagon',circle:'circle'};
+ 
+ testQuestions=[];
+ let qid=0;
+ 
+ // Normal questions (1pt each)
+ const normalQs=[
+ ()=>{
+  let r=3+Math.random()*5;
+  return{q:`Una carga de q = ${r.toFixed(1)} µC está a 30 cm de un punto P. ¿Cuál es el campo |E| en P (en N/C)? k=9×10⁹`,
+   ans:9e9*Math.abs(r)*1e-6/(0.3*0.3),tol:0.05,diff:1,fig:'',
+   sol:`E = k·q/r²\nE = (9×10⁹)(${(r*1e-6).toExponential(1)})/(0.30)²\nE = ${(9e9*Math.abs(r)*1e-6/(0.09)).toExponential(2)} N/C`}
+ },
+ ()=>{
+  let r=2+Math.random()*4;
+  return{q:`Dos cargas de +${r.toFixed(1)} µC y −${(r*1.5).toFixed(1)} µC están separadas 50 cm. ¿Cuál es el campo en el punto medio? k=9×10⁹`,
+   ans:9e9*Math.abs(r*1.5)*1e-6/(0.25*0.25)+9e9*Math.abs(r)*1e-6/(0.25*0.25),tol:0.08,diff:1,fig:'',
+   sol:`E₁ = k·q₁/r² = (9×10⁹)·(${r*1e-6})/(0.25)² = ${(9e9*Math.abs(r)*1e-6/0.0625).toExponential(2)} N/C\nE₂ = k·q₂/r² = (9×10⁹)·(${(r*1.5*1e-6)})/(0.25)² = ${(9e9*Math.abs(r*1.5)*1e-6/0.0625).toExponential(2)} N/C\n(misma dirección) E_total = E₁+E₂ = ${(9e9*Math.abs(r)*1e-6/0.0625+9e9*Math.abs(r*1.5)*1e-6/0.0625).toExponential(2)} N/C`}
+ },
+ ()=>{
+  let r=1+Math.random()*3,q=2+Math.random()*4;
+  return{q:`Una carga de prueba q₀ = +${q.toFixed(1)} µC siente una fuerza F = ${(r*0.75+0.5).toFixed(2)} N. ¿Cuál es el campo E en ese punto (N/C)?`,
+   ans:(r*0.75+0.5)/(q*1e-6),tol:0.05,diff:1,fig:'',
+   sol:`E = F/q₀\nE = ${(r*0.75+0.5).toFixed(2)} / ${(q*1e-6).toExponential(1)}\nE = ${((r*0.75+0.5)/(q*1e-6)).toExponential(2)} N/C`}
+ }];
+ 
+ // Hard questions (2pt each)
+ const hardQs=[
+ ()=>{
+  let sh=shapes[Math.floor(Math.random()*shapes.length)];
+  let L=3+Math.random()*5;
+  let figName=LANG==='es'?figs[sh]:figsEn[sh];
+  return{q:`Campo en el centro de un ${figName} de lado ${L.toFixed(1)} cm con cargas +q en 3 vértices y −q en el restante (q = 5 µC). |E| en N/C? Distancia centro-vértice = lado/√2.`,
+   ans:2*9e9*5e-6/((L*0.01/Math.SQRT2)**2),tol:0.1,diff:2,fig:sh,
+   sol:`r = L/√2 = ${L.toFixed(1)}/1.414 = ${(L/1.414).toFixed(2)} cm = ${(L/141.4).toFixed(4)} m\nE₁ = k·q/r² = (9×10⁹)(5×10⁻⁶)/(${(L/141.4).toFixed(4)})² = ${(9e9*5e-6/((L*0.01/Math.SQRT2)**2)).toExponential(2)} N/c\nSimetría: 2 cargas opuestas se cancelan → E_total = 2E₁\nE_total = ${(2*9e9*5e-6/((L*0.01/Math.SQRT2)**2)).toExponential(2)} N/C`}
+ },
+ ()=>{
+  let q=2+Math.random()*6;
+  return{q:`Tres cargas iguales q = ${q.toFixed(1)} µC en vértices de triángulo equilátero de lado 20 cm. ¿Campo en el centro? k=9×10⁹. Distancia centro-vértice = lado/√3`,
+   ans:0,tol:0.01,diff:2,fig:'triang',
+   sol:`Por simetría, las 3 contribuciones se cancelan.\nCada carga produce E = k·q/r².\nr = L/√3 = 20/1.732 = 11.55 cm\nLos 3 vectores se anulan mutuamente (120° entre sí).\nE_total = 0 N/C`}
+ },
+ ()=>{
+  let q=2+Math.random()*4;
+  return{q:`Dipolo: +${q.toFixed(1)} µC y −${q.toFixed(1)} µC separados 10 cm. |E| en la bisectriz perpendicular a 20 cm del centro? E = k·p/² donde p = q·d.`,
+   ans:9e9*(q*1e-6*0.1)/(0.2**3),tol:0.08,diff:2,fig:'',
+   sol:`Momento dipolar p = q·d = (${q}×10⁻⁶)(0.10) = ${(q*1e-7).toExponential(1)} C·m\nE = k·p/r³ = (9×10⁹)·${(q*1e-7).toExponential(1)}/(0.20)³\nr³ = 0.008 m³\nE = ${(9e9*q*1e-7/0.008).toExponential(2)} N/C`}
+ },
+ ()=>{
+  let q=3+Math.random()*4,r=20+Math.random()*30;
+  return{q:`Cuatro cargas +${q.toFixed(1)} µC en esquinas de cuadrado de ${r.toFixed(0)} cm de lado. ¿Campo en el centro en N/C?`,
+   ans:0,tol:0.01,diff:2,fig:'square',
+   sol:`Simetría completa: las 4 cargas iguales producen campos que se cancelan en el centro.\n|E₁| = |E₂| = |E₃| = |E₄| y están a 90° entre sí, anulándose por pares.\nE_total = 0 N/C`}
+ },
+ ()=>{
+  let q=1+Math.random()*3,r=15+Math.random()*25;
+  return{q:`Un anillo de radio ${r.toFixed(0)} cm con carga total Q = ${q.toFixed(1)} µC distribuida uniformemente. |E| en el centro?`,
+   ans:0,tol:0.01,diff:2,fig:'circle',
+   sol:`Por simetría, cada elemento dq del anillo produce un campo que se cancela con el elemento opuesto.\nSolo contribuye la componente perpendicular, pero en el centro todas se anulan.\nE_total = 0 N/C`}
+ },
+ ()=>{
+  return{q:`Seis cargas alternadas +q,−q en hexágono regular de lado 15 cm (q=4 µC). |E| en el centro? Distancia centro-vértice = lado.`,
+   ans:0,tol:0.01,diff:2,fig:'hexagon',
+   sol:`Hexágono con cargas alternadas + y −. Cada par opuesto (+q vs −q) se cancela.\nTres pares opuestos → E_total = 0 N/C\nVerificación: la suma vectorial de los 6 campos es nula por simetría hexagonal.`}
+ },
+ ()=>{
+  let sh=shapes[Math.floor(Math.random()*shapes.length)];
+  let L=3+Math.random()*4;
+  let figName=LANG==='es'?figs[sh]:figsEn[sh];
+  return{q:`${figName} de lado ${L.toFixed(1)} cm, cargas +2q y −q alternadas. q=3 µC. Distancia centro-vértice = L/√2 para cuadrado, L/√3 para triángulo. Calcular |E| en el centro.`,
+   ans:2*9e9*3e-6/((L*0.01/Math.SQRT2)**2),tol:0.15,diff:2,fig:sh,
+   sol:`r = L/√2 = ${(L/1.414).toFixed(2)} cm = ${(L/141.4).toFixed(4)} m\nE = k·q/r² = (9×10⁹)(3×10⁻⁶)/(${(L/141.4).toFixed(4)})²\nE = ${(9e9*3e-6/((L*0.01/Math.SQRT2)**2)).toExponential(2)} N/C\nDos cargas netas producen campo.\nE_total = 2E = ${(2*9e9*3e-6/((L*0.01/Math.SQRT2)**2)).toExponential(2)} N/C`}
+ }];
+ 
+ // Assemble: 3 normal + 7 hard, shuffled
+ let allQs=[];
+ for(let i=0;i<3;i++){let q=normalQs[i%normalQs.length]();q.id=++qid;q.type='normal';allQs.push(q)}
+ for(let i=0;i<7;i++){let q=hardQs[i%hardQs.length]();q.id=++qid;q.type='hard';allQs.push(q)}
+ 
+ // Shuffle
+ for(let i=allQs.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[allQs[i],allQs[j]]=[allQs[j],allQs[i]]}
+ 
+ testQuestions=allQs;testAnswers={};
+ renderTest();document.getElementById('testInfo').textContent=T('testDesc');
+ document.getElementById('testInfo').classList.remove('hidden');
+ document.getElementById('testGenBtn').disabled=true;
+}
+function renderTest(){
+ const cont=document.getElementById('testQuestions');cont.innerHTML='';
+ const grid=document.createElement('div');grid.className='question-grid';
+ testQuestions.forEach((q,i)=>{
+  const card=document.createElement('div');card.className='q-card';card.dataset.q=q.id;
+  const diffLabel=q.type==='normal'?T('qNormal'):T('qHard');
+  const diffPts=q.type==='normal'?'1pt':'2pt';
+  card.innerHTML='<div class="qtext">'+q.q+' <small>['+diffLabel+' · '+diffPts+']</small></div>'+
+   '<div style="display:flex;align-items:center;gap:6px"><input class="qans" id="qans_'+q.id+'" type="number" step="0.01" placeholder="Respuesta">'+
+   '<span id="qansStatus_'+q.id+'"></span></div>';
+  grid.appendChild(card)
+ });
+ cont.appendChild(grid);
+ document.getElementById('testSubmitBtn').classList.remove('hidden');
+ document.getElementById('testResult').classList.add('hidden');
+}
+function gradeTest(){
+ let total=0,maxTotal=0;
+ testQuestions.forEach(q=>{
+  const inp=document.getElementById('qans_'+q.id);
+  const status=document.getElementById('qansStatus_'+q.id);
+  const val=parseFloat(inp.value);
+  const pts=q.type==='normal'?1:2;
+  maxTotal+=pts;
+  if(!isNaN(val)&&Math.abs(val-q.ans)/Math.max(Math.abs(q.ans),1)<=q.tol){
+   total+=pts;status.textContent='✓ '+pts+'pt';status.className='q-correct'
+  }else{
+   status.textContent='✗ 0pt (→ '+q.ans.toExponential(3)+')';status.className='q-wrong'
+  }
+ });
+ document.getElementById('testScore').textContent=total+'/'+maxTotal;
+ const pct=Math.round(100*total/maxTotal);
+ let grade=LANG==='es'?(pct>=90?'Excelente':pct>=70?'Bien':pct>=50?'Regular':'Necesita mejorar'):(pct>=90?'Excellent':pct>=70?'Good':pct>=50?'Average':'Needs improvement');
+ document.getElementById('testGrade').textContent=grade+' ('+pct+'%)';
+ document.getElementById('testResult').classList.remove('hidden');
+ 
+ // Show solutions
+ const solDiv=document.getElementById('testSolutions');
+ solDiv.innerHTML='<h3 style="margin:12px 0 8px;color:var(--blue);font-size:.9rem">'+T('solTitle')+'</h3>';
+ testQuestions.forEach(q=>{
+  const div=document.createElement('div');div.className='charge-card';div.style.margin='4px 0';
+  div.innerHTML='<b style="font-size:.82rem">#'+q.id+'. '+q.q.substring(0,60)+'…</b>'+
+   '<div class="step-solution">'+q.sol+'</div>';
+  solDiv.appendChild(div)
+ });
+ 
+ document.getElementById('testPrintReport').classList.remove('hidden');
+ 
+ // Save to professor
+ saveToProfessor();
+}
+document.getElementById('testGenBtn').onclick=genTest;
+document.getElementById('testSubmitBtn').onclick=gradeTest;
+document.getElementById('testPrintReport').onclick=()=>window.print();
+//=== PROFESSOR MODE ===
+function saveToProfessor(){
+ const pName=document.getElementById('pName').value||document.getElementById('tFirstName').value+' '+document.getElementById('tLastName').value;
+ const pId=document.getElementById('pId').value||document.getElementById('tParalelo').value;
+ const pDate=document.getElementById('pDate').value||new Date().toISOString().split('T')[0];
+ const score=document.getElementById('testScore').textContent;
+ let sessions=JSON.parse(localStorage.getItem('ceSessions')||'[]');
+ sessions.unshift({name:pName,id:pId,date:pDate,score:score,time:new Date().toISOString()});
+ if(sessions.length>100)sessions=sessions.slice(0,100);
+ localStorage.setItem('ceSessions',JSON.stringify(sessions));
+ renderProfSessions();
+}
+document.getElementById('profSaveBtn').onclick=()=>{
+ let sessions=JSON.parse(localStorage.getItem('ceSessions')||'[]');
+ sessions.unshift({name:document.getElementById('pName').value,id:document.getElementById('pId').value,
+  date:document.getElementById('pDate').value||new Date().toISOString().split('T')[0],
+  notes:document.getElementById('pNotes').value,time:new Date().toISOString()});
+ if(sessions.length>100)sessions=sessions.slice(0,100);
+ localStorage.setItem('ceSessions',JSON.stringify(sessions));
+ renderProfSessions();alert(T('saveOk'))
+};
+document.getElementById('profClearBtn').onclick=()=>{
+ if(confirm(T('clearConfirm'))){localStorage.removeItem('ceSessions');renderProfSessions()}
+};
+document.getElementById('profExportBtn').onclick=()=>{
+ let sessions=JSON.parse(localStorage.getItem('ceSessions')||'[]');
+ let csv='Nombre,ID,Fecha,Score,Notas\n';
+ sessions.forEach(s=>csv+=`"${s.name||''}","${s.id||''}","${s.date||''}","${s.score||''}","${s.notes||''}"\n`);
+ const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);
+ const a=document.createElement('a');a.href=url;a.download='campo_electrico_sesiones.csv';
+ document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url)
+};
+function renderProfSessions(){
+ const cont=document.getElementById('profSessions');
+ const sessions=JSON.parse(localStorage.getItem('ceSessions')||'[]');
+ if(!sessions.length){cont.innerHTML='<p style="color:var(--muted);padding:8px;font-size:.82rem">'+T('noSessions')+'</p>';return}
+ let html='<div style="max-height:400px;overflow:auto">';
+ sessions.forEach((s,i)=>{
+  html+='<div class="charge-card" style="cursor:pointer;margin:2px 0">'+
+   '<b style="font-size:.82rem">'+(s.name||'?')+'</b> <span style="color:var(--muted);font-size:.72rem">'+(s.id||'')+' | '+(s.date||'')+' | '+(s.score||'')+'</span>'+
+   (s.notes?'<br><small style="color:var(--muted)">'+s.notes+'</small>':'')+'</div>'
+ });
+ html+='</div>';cont.innerHTML=html
+}
+renderProfSessions();
+//=== MODE TABS ===
+document.querySelectorAll('.mode-tab').forEach(tab=>{
+ tab.onclick=function(){
+  document.querySelectorAll('.mode-tab').forEach(t=>t.classList.remove('active'));
+  this.classList.add('active');
+  document.querySelectorAll('.mode-section').forEach(s=>s.classList.add('hidden'));
+  document.getElementById(this.dataset.mode+'Mode').classList.remove('hidden');
+  if(this.dataset.mode==='sim')setTimeout(resize,50);
+ }
+});
+//=== INIT ===
+document.getElementById('printBtn').onclick=()=>window.print();
 resetAll();setTimeout(()=>{resize();fitAll()},100);
+// Fix data-i18n
+document.querySelectorAll('[data-i18n]').forEach(el=>{el.dataset.i18nOrg=el.textContent});
+renderPractice();
 </script>
 </body>
 </html>

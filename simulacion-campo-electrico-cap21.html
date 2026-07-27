@@ -6,10 +6,10 @@
 <title>Campo Eléctrico I — CIENCIA OMSAIRAM</title>
 <style>
 /* ===== ROOT / THEMES ===== */
-:root{--bg:#f3f6fb;--card:#fff;--paper:#fff;--ink:#101820;--muted:#5d6875;--line:#d7dee8;--blue:#163c6d;--blue2:#2563a6;--red:#a31f34;--gold:#c98b2b;--green:#28795b;--accent:#0f55aa;--canvas-bg:#fbfdff;--header-bg:#fff;--btn-bg:#ffd33d;--btn-text:#111;--btn:#ffd33d;--shadow:0 18px 45px rgba(15,32,55,.12);--slider-bg:#ddd;--positive:#e43622;--negative:#0f55aa;--test:#16773a}
-.Theme--blackboard{--bg:#1a1f2e;--card:#242a3d;--paper:#242a3d;--ink:#e8eaf0;--muted:#8892b0;--line:#3a4060;--blue:#6c8cff;--blue2:#8aa4ff;--red:#ff6b6b;--gold:#ffd700;--green:#4cd964;--accent:#6c8cff;--canvas-bg:#1e2435;--header-bg:#1a1f2e;--btn-bg:#6c8cff;--btn-text:#fff;--shadow:0 18px 45px rgba(0,0,0,.3);--slider-bg:#3a4060;--positive:#ff6b6b;--negative:#6c8cff;--test:#4cd964}
-.Theme--davinci{--bg:#2b1f0e;--card:#3d2e18;--paper:#3d2e18;--ink:#f0e6d0;--muted:#b8a88a;--line:#6b4f2a;--blue:#d4a84b;--blue2:#e0b85c;--red:#e8744a;--gold:#ffd700;--green:#8ab85c;--accent:#d4a84b;--canvas-bg:#322415;--header-bg:#2b1f0e;--btn-bg:#d4a84b;--btn-text:#2b1f0e;--shadow:0 18px 45px rgba(0,0,0,.3);--slider-bg:#6b4f2a;--positive:#e8744a;--negative:#d4a84b;--test:#8ab85c}
-.Theme--dark{--bg:#000;--card:#111;--paper:#111;--ink:#e0e0e0;--muted:#888;--line:#333;--blue:#4488ff;--blue2:#66aaff;--red:#ff4444;--gold:#ffaa00;--green:#44cc44;--accent:#4488ff;--canvas-bg:#0a0a0a;--header-bg:#000;--btn-bg:#4488ff;--btn-text:#fff;--shadow:0 18px 45px rgba(0,0,0,.5);--slider-bg:#333;--positive:#ff4444;--negative:#4488ff;--test:#44cc44}
+:root{--bg:#f3f6fb;--card:#fff;--paper:#fff;--ink:#101820;--muted:#5d6875;--line:#d7dee8;--blue:#163c6d;--blue2:#2563a6;--red:#a31f34;--gold:#c98b2b;--green:#28795b;--accent:#0f55aa;--canvas-bg:#fbfdff;--header-bg:#fff;--btn-bg:#ffd33d;--btn-text:#111;--btn:#ffd33d;--shadow:0 18px 45px rgba(15,32,55,.12);--slider-bg:#ddd;--positive:#0f55aa;--negative:#e43622;--test:#16773a}
+.Theme--blackboard{--bg:#1a1f2e;--card:#242a3d;--paper:#242a3d;--ink:#e8eaf0;--muted:#8892b0;--line:#3a4060;--blue:#6c8cff;--blue2:#8aa4ff;--red:#ff6b6b;--gold:#ffd700;--green:#4cd964;--accent:#6c8cff;--canvas-bg:#1e2435;--header-bg:#1a1f2e;--btn-bg:#6c8cff;--btn-text:#fff;--shadow:0 18px 45px rgba(0,0,0,.3);--slider-bg:#3a4060;--positive:#6c8cff;--negative:#ff6b6b;--test:#4cd964}
+.Theme--davinci{--bg:#2b1f0e;--card:#3d2e18;--paper:#3d2e18;--ink:#f0e6d0;--muted:#b8a88a;--line:#6b4f2a;--blue:#5588cc;--blue2:#77aadd;--red:#e8744a;--gold:#ffd700;--green:#8ab85c;--accent:#5588cc;--canvas-bg:#322415;--header-bg:#2b1f0e;--btn-bg:#5588cc;--btn-text:#f0e6d0;--shadow:0 18px 45px rgba(0,0,0,.3);--slider-bg:#6b4f2a;--positive:#5588cc;--negative:#e8744a;--test:#8ab85c}
+.Theme--dark{--bg:#000;--card:#111;--paper:#111;--ink:#e0e0e0;--muted:#888;--line:#333;--blue:#4488ff;--blue2:#66aaff;--red:#ff4444;--gold:#ffaa00;--green:#44cc44;--accent:#4488ff;--canvas-bg:#0a0a0a;--header-bg:#000;--btn-bg:#4488ff;--btn-text:#fff;--shadow:0 18px 45px rgba(0,0,0,.5);--slider-bg:#333;--positive:#4488ff;--negative:#ff4444;--test:#44cc44}
 
 *,*::before,*::after{box-sizing:border-box}
 html{min-width:320px;color-scheme:light dark}
@@ -41,6 +41,12 @@ h1{margin:0 0 4px;font-size:clamp(1.2rem,2.5vw,2.6rem);color:var(--blue)}.subtit
 .mode-tab{min-height:44px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--muted);font-weight:900;font-size:.9rem;transition:.1s}
 .mode-tab.active{color:#fff;background:var(--blue);border-color:var(--blue)}
 .hidden{display:none!important}
+/* MOBILE LAYOUT */
+.mobile-layout .panel{position:fixed;bottom:0;left:0;right:0;z-index:100;max-height:45dvh;border-radius:12px 12px 0 0;box-shadow:0 -4px 20px rgba(0,0,0,.2);overflow-y:auto}
+.mobile-layout .stage{height:55dvh;min-height:280px}
+.mobile-layout .app{display:block;height:auto}
+.mobile-layout .canvas-tools button{font-size:9px;padding:2px 5px}
+.mobile-layout .mode-control{min-width:auto}
 /* APP LAYOUT */
 .app{display:grid;grid-template-columns:75% 25%;gap:6px;min-height:calc(100dvh - 220px)}.card{background:var(--paper);border:1px solid var(--line);border-radius:6px;box-shadow:var(--shadow);padding:10px;margin-bottom:8px}
 .stage{position:relative;border:1px solid var(--line);border-radius:6px;background:var(--canvas-bg);overflow:hidden;min-height:400px}
@@ -418,7 +424,7 @@ function arrow(x1,y1,x2,y2,c,w){
 }
 function drawCharge(c,t){
  let p=S(c.x,c.y),r=(t?18:23)*Math.max(.65,Math.min(1.25,view.s));
- ctx.fillStyle=t?'var(--test,#16773a)':c.q>=0?'var(--positive,#e43622)':'var(--negative,#0f55aa)';
+ ctx.fillStyle=t?'var(--test,#16773a)':c.q>=0?'var(--positive,#0f55aa)':'var(--negative,#e43622)';
  ctx.beginPath();ctx.arc(p.x,p.y,r,0,7);ctx.fill();
  ctx.lineWidth=2;ctx.strokeStyle='var(--ink,#111)';ctx.stroke();
  ctx.fillStyle='#fff';ctx.font='bold '+Math.max(13,18*view.s)+'px Arial';
@@ -429,7 +435,7 @@ function drawVectors(){
  let d=D();
  for(let py=55;py<d.h-15;py+=55)for(let px=30;px<d.w-15;px+=55){
   let w=W(px,py),e=field(w.x,w.y),L=10+Math.min(22,Math.log10(e.mag+1)*3);
-  arrow(px-Math.cos(e.a)*L/2,py-Math.sin(e.a)*L/2,px+Math.cos(e.a)*L/2,py+Math.sin(e.a)*L/2,'rgba(15,85,170,.55)',1.2)
+  arrow(px-Math.cos(e.a)*L/2,py-Math.sin(e.a)*L/2,px+Math.cos(e.a)*L/2,py+Math.sin(e.a)*L/2,'color-mix(in srgb,var(--accent,#0f55aa) 75%,transparent)',1.2)
  }
 }
 function trace(x,y,s,col){
@@ -441,23 +447,49 @@ function trace(x,y,s,col){
 }
 function drawLines(){
  for(const c of C)for(let i=0;i<12;i++){let a=2*Math.PI*i/12;
-  trace(c.x+Math.cos(a)*22,c.y+Math.sin(a)*22,c.q>=0?1:-1,c.q>=0?'var(--positive,#e43622)':'var(--negative,#0f55aa)')}
+  trace(c.x+Math.cos(a)*22,c.y+Math.sin(a)*22,c.q>=0?1:-1,c.q>=0?'var(--positive,#0f55aa)':'var(--negative,#e43622)')}
 }
 function drawEqui(){
- let d=D();ctx.globalAlpha=.55;
- for(let n=1;n<=8;n++){
-  let vLevel=5000*n;ctx.beginPath();
-  for(let i=0;i<=360;i+=6){
-   let a=i*Math.PI/180,found=false;
-   for(let r=5;r<500;r+=2){
-    let x=r*Math.cos(a),y=r*Math.sin(a);
-    if(Math.abs(potential(x,y)-vLevel)<vLevel*0.08){let p=S(x,y);i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y);found=true;break}
-   }
-   if(!found)ctx.closePath()
+  // Marching Squares contouring for equipotential surfaces
+  let d=D();
+  const step=10;
+  const cols=Math.floor(d.w/step);
+  const rows=Math.floor(d.h/step);
+  // Sample potential on grid
+  const grid=[];
+  for(let r=0;r<=rows;r++){grid[r]=[];
+    for(let c=0;c<=cols;c++){let w=W(c*step,r*step);grid[r][c]=potential(w.x,w.y)}}
+  // Find potential range in visible area
+  let vmin=Infinity,vmax=-Infinity;
+  for(let r=0;r<=rows;r++)for(let c=0;c<=cols;c++){let v=grid[r][c];if(v<vmin)vmin=v;if(v>vmax)vmax=v}
+  if(vmin===vmax)return;
+  ctx.globalAlpha=.6;
+  // Draw 10 equipotential lines
+  for(let li=1;li<=10;li++){
+    let v=vmin+li*(vmax-vmin)/11;
+    ctx.strokeStyle=li%2? 'rgba(201,139,43,.65)' : 'rgba(40,121,91,.65)';
+    ctx.lineWidth=1.2;ctx.beginPath();let started=false;
+    for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+      let v00=grid[r][c],v01=grid[r][c+1],v10=grid[r+1][c],v11=grid[r+1][c+1];
+      let x0=c*step,y0=r*step,x1=(c+1)*step,y1=(r+1)*step;
+      // Marching squares: find edges crossed by this potential level
+      let pts=[];
+      // Top edge
+      if((v00<v)!==(v01<v)){let t=(v-v00)/(v01-v00||1e-12);pts.push({x:x0+t*step,y:y0})}
+      // Right edge
+      if((v01<v)!==(v11<v)){let t=(v-v01)/(v11-v01||1e-12);pts.push({x:x1,y:y0+t*step})}
+      // Bottom edge
+      if((v10<v)!==(v11<v)){let t=(v-v10)/(v11-v10||1e-12);pts.push({x:x0+t*step,y:y1})}
+      // Left edge
+      if((v00<v)!==(v10<v)){let t=(v-v00)/(v10-v00||1e-12);pts.push({x:x0,y:y0+t*step})}
+      if(pts.length===2){
+        if(!started){started=true}
+        ctx.moveTo(pts[0].x,pts[0].y);ctx.lineTo(pts[1].x,pts[1].y)
+      }
+    }
+    ctx.stroke()
   }
-  ctx.strokeStyle=n%2===0?'var(--gold,#c98b2b)':'var(--green,#28795b)';ctx.lineWidth=1.2;ctx.stroke()
- }
- ctx.globalAlpha=1
+  ctx.globalAlpha=1
 }
 function draw(){
  let d=D();ctx.clearRect(0,0,d.w,d.h);

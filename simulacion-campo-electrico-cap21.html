@@ -443,20 +443,21 @@ function arrow(x1,y1,x2,y2,c,w){
  ctx.beginPath();ctx.moveTo(x2-9*Math.cos(a-.5),y2-9*Math.sin(a-.5));
  ctx.lineTo(x2-9*Math.cos(a+.5),y2-9*Math.sin(a+.5));ctx.closePath();ctx.fill()
 }
+function cv(n){return getComputedStyle(document.documentElement).getPropertyValue(n)}
 function drawCharge(c,t){
  let p=S(c.x,c.y),r=(t?18:23)*Math.max(.65,Math.min(1.25,view.s));
- ctx.fillStyle=t?'var(--test,#16773a)':c.q>=0?'var(--positive,#0f55aa)':'var(--negative,#e43622)';
+ ctx.fillStyle=t?cv('--test'):c.q>=0?cv('--positive'):cv('--negative');
  ctx.beginPath();ctx.arc(p.x,p.y,r,0,7);ctx.fill();
- ctx.lineWidth=2;ctx.strokeStyle='var(--ink,#111)';ctx.stroke();
+ ctx.lineWidth=2;ctx.strokeStyle=cv('--ink');ctx.stroke();
  ctx.fillStyle='#fff';ctx.font='bold '+Math.max(13,18*view.s)+'px Arial';
  ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(t?'t':c.q>=0?'+':'−',p.x,p.y);
- ctx.fillStyle='var(--ink,#111)';ctx.font='bold 10px Arial';ctx.fillText(t?'prueba':c.id,p.x,p.y+r+10)
+ ctx.fillStyle=cv('--ink');ctx.font='bold 10px Arial';ctx.fillText(t?'prueba':c.id,p.x,p.y+r+10)
 }
 function drawVectors(){
  let d=D();
  for(let py=55;py<d.h-15;py+=55)for(let px=30;px<d.w-15;px+=55){
   let w=W(px,py),e=field(w.x,w.y),L=10+Math.min(22,Math.log10(e.mag+1)*3);
-  arrow(px-Math.cos(e.a)*L/2,py-Math.sin(e.a)*L/2,px+Math.cos(e.a)*L/2,py+Math.sin(e.a)*L/2,'color-mix(in srgb,var(--accent,#0f55aa) 70%,transparent)',1.2)
+  arrow(px-Math.cos(e.a)*L/2,py-Math.sin(e.a)*L/2,px+Math.cos(e.a)*L/2,py+Math.sin(e.a)*L/2,cv('--accent'),1.2)
  }
 }
 function trace(x,y,s,col){
@@ -468,7 +469,7 @@ function trace(x,y,s,col){
 }
 function drawLines(){
  for(const c of C)for(let i=0;i<12;i++){let a=2*Math.PI*i/12;
-  trace(c.x+Math.cos(a)*22,c.y+Math.sin(a)*22,c.q>=0?1:-1,c.q>=0?'var(--positive,#0f55aa)':'var(--negative,#e43622)')}
+  trace(c.x+Math.cos(a)*22,c.y+Math.sin(a)*22,c.q>=0?1:-1,c.q>=0?cv('--positive'):cv('--negative'))}
 }
 function drawEqui(){
   // Marching Squares contouring — correcto para múltiples cargas
@@ -521,7 +522,7 @@ function draw(){
  if(document.getElementById('chkTest').checked){
   drawCharge(T,true);
   let e=field(T.x,T.y),p=S(T.x,T.y),L=Math.min(85,16+Math.log10(e.mag+1)*7);
-  arrow(p.x,p.y,p.x+Math.cos(e.a)*L,p.y+Math.sin(e.a)*L,'var(--test,#16773a)',3.5)
+  arrow(p.x,p.y,p.x+Math.cos(e.a)*L,p.y+Math.sin(e.a)*L,cv('--test'),3.5)
  }
  let e=field(T.x,T.y),f=Math.abs(T.q*1e-6)*e.mag;
  document.getElementById('eMag').textContent=sci(e.mag,'N/C');

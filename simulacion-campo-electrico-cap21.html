@@ -344,8 +344,8 @@ ps6t:"6. Dipolo eléctrico",ps6:"Un dipolo son dos cargas iguales de signo opues
 ps7t:"7. Simetrías y configuraciones",ps7:"Para configuraciones simétricas (cuadrado, hexágono, anillo), el campo total en el centro es la suma vectorial de las contribuciones individuales.",
 ps8t:"8. Aplicaciones",ps8:"El campo eléctrico se usa en blindaje electrostático (jaula de Faraday), capacitores, tubos de rayos catódicos, y aceleradores de partículas.",
 // Test
-testDesc:"Responde las 10 preguntas numéricas. 7 preguntas difíciles (2 pts c/u) y 3 normales (1 pt c/u). Total 17 pts.",
-qNormal:"Normal",qHard:"Difícil",
+testDesc:"Responde las 10 preguntas numéricas. 2 preguntas difíciles (2 pts c/u), 4 normales (1 pt c/u) y 4 fáciles (0.5 pts c/u). Total 10 pts.",
+qNormal:"Normal",qHard:"Difícil",qEasy:"Fácil",
 scoreLabel:"Calificación",correct:"✓ Correcto",wrong:"✗ Incorrecto",
 solTitle:"Soluciones paso a paso",
 // Prof
@@ -374,8 +374,8 @@ ps5t:"5. Equipotential surfaces",ps5:"Surfaces of constant potential, perpendicu
 ps6t:"6. Electric dipole",ps6:"Two equal opposite charges separated by distance d. Field on perpendicular bisector: E = k·p/r³ where p = q·d.",
 ps7t:"7. Symmetries and configurations",ps7:"For symmetric configurations (square, hexagon, ring), the total field at center is the vector sum of individual contributions.",
 ps8t:"8. Applications",ps8:"Electric field is used in electrostatic shielding (Faraday cage), capacitors, cathode ray tubes, and particle accelerators.",
-testDesc:"Answer 10 numerical questions. 7 hard (2 pts each) and 3 normal (1 pt each). Total 17 pts.",
-qNormal:"Normal",qHard:"Hard",
+testDesc:"Answer 10 numerical questions. 2 hard (2 pts each), 4 normal (1 pt each) and 4 easy (0.5 pts each). Total 10 pts.",
+qNormal:"Normal",qHard:"Hard",qEasy:"Easy",
 scoreLabel:"Grade",correct:"✓ Correct",wrong:"✗ Incorrect",
 solTitle:"Step-by-step solutions",
 saveOk:"Session saved.",clearConfirm:"Clear all history?",csvExport:"Data exported.",
@@ -677,7 +677,34 @@ function genTest(){
    ans:(r*0.75+0.5)/(q*1e-6),tol:0.05,diff:1,fig:'',
    sol:`E = F/q₀\nE = ${(r*0.75+0.5).toFixed(2)} / ${(q*1e-6).toExponential(1)}\nE = ${((r*0.75+0.5)/(q*1e-6)).toExponential(2)} N/C`}
  }];
- 
+
+ // Easy questions (0.5pt each)
+ const easyQs=[
+  ()=>{
+   let r=10+Math.floor(Math.random()*20);
+   return{q:`Una carga q = 2 µC genera campo en un punto a ${r} cm. ¿Cuál es |E| en N/C? k=9×10⁹`,
+    ans:9e9*2e-6/((r*0.01)**2),tol:0.05,diff:0.5,fig:'',
+    sol:`E = k·q/r² = (9×10⁹)(2×10⁻⁶)/(${(r*0.01).toFixed(2)})²\nE = ${(9e9*2e-6/((r*0.01)**2)).toExponential(2)} N/C`}
+  },
+  ()=>{
+   let F=2+Math.floor(Math.random()*8),q=1+Math.random()*3;
+   return{q:`Una carga de prueba q₀ = ${q.toFixed(1)} µC siente una fuerza de ${F} N. ¿Cuál es el campo E (N/C)?`,
+    ans:F/(q*1e-6),tol:0.05,diff:0.5,fig:'',
+    sol:`E = F/q₀ = ${F} / ${(q*1e-6).toExponential(1)}\nE = ${(F/(q*1e-6)).toExponential(2)} N/C`}
+  },
+  ()=>{
+   let r=5+Math.floor(Math.random()*15);
+   return{q:`Una carga q = 3 µC produce |E| = ${(9e9*3e-6/((r*0.01)**2)).toFixed(0)} N/C. ¿A qué distancia está (en cm)?`,
+    ans:r,tol:0.05,diff:0.5,fig:'',
+    sol:`r = √(k·q/E) = √((9×10⁹)(3×10⁻⁶)/${(9e9*3e-6/((r*0.01)**2)).toFixed(0)})\nr = ${r} cm`}
+  },
+  ()=>{
+   let q1=2+Math.floor(Math.random()*4),q2=3+Math.floor(Math.random()*3);
+   return{q:`Dos cargas q₁ = ${q1} µC y q₂ = −${q2} µC separadas 30 cm. ¿Campo E a 20 cm de q₁ sobre la línea que las une (en N/C)? k=9×10⁹`,
+    ans:9e9*q1*1e-6/0.04+9e9*q2*1e-6/0.01,tol:0.1,diff:0.5,fig:'',
+    sol:`E₁ = k·q₁/r₁² = (9×10⁹)(${q1}×10⁻⁶)/(0.20)² = ${(9e9*q1*1e-6/0.04).toExponential(2)} N/C\nE₂ = k·q₂/r₂² = (9×10⁹)(${q2}×10⁻⁶)/(0.10)² = ${(9e9*q2*1e-6/0.01).toExponential(2)} N/C\nE = E₁ − E₂ = ${(9e9*q1*1e-6/0.04+9e9*q2*1e-6/0.01).toExponential(2)} N/C`}
+  }];
+
  // Hard questions (2pt each)
  const hardQs=[
  ()=>{
@@ -726,10 +753,11 @@ function genTest(){
    sol:`r = L/√2 = ${(L/1.414).toFixed(2)} cm = ${(L/141.4).toFixed(4)} m\nE = k·q/r² = (9×10⁹)(3×10⁻⁶)/(${(L/141.4).toFixed(4)})²\nE = ${(9e9*3e-6/((L*0.01/Math.SQRT2)**2)).toExponential(2)} N/C\nDos cargas netas producen campo.\nE_total = 2E = ${(2*9e9*3e-6/((L*0.01/Math.SQRT2)**2)).toExponential(2)} N/C`}
  }];
  
- // Assemble: 3 normal + 7 hard, shuffled
+ // Assemble: 2 hard (2pt) + 4 normal (1pt) + 4 easy (0.5pt) = 10 questions, max 10 pts
  let allQs=[];
- for(let i=0;i<3;i++){let q=normalQs[i%normalQs.length]();q.id=++qid;q.type='normal';allQs.push(q)}
- for(let i=0;i<7;i++){let q=hardQs[i%hardQs.length]();q.id=++qid;q.type='hard';allQs.push(q)}
+ for(let i=0;i<2;i++){let q=hardQs[i%hardQs.length]();q.id=++qid;q.type='hard';allQs.push(q)}
+ for(let i=0;i<4;i++){let q=normalQs[i%normalQs.length]();q.id=++qid;q.type='normal';allQs.push(q)}
+ for(let i=0;i<4;i++){let q=easyQs[i%easyQs.length]();q.id=++qid;q.type='easy';allQs.push(q)}
  
  // Shuffle
  for(let i=allQs.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[allQs[i],allQs[j]]=[allQs[j],allQs[i]]}
@@ -744,8 +772,8 @@ function renderTest(){
  const grid=document.createElement('div');grid.className='question-grid';
  testQuestions.forEach((q,i)=>{
   const card=document.createElement('div');card.className='q-card';card.dataset.q=q.id;
-  const diffLabel=q.type==='normal'?tr('qNormal'):tr('qHard');
-  const diffPts=q.type==='normal'?'1pt':'2pt';
+  const diffLabel=q.type==='normal'?tr('qNormal'):q.type==='hard'?tr('qHard'):tr('qEasy');
+  const diffPts=q.type==='hard'?'2pt':q.type==='normal'?'1pt':'0.5pt';
   card.innerHTML='<div class="qtext">'+q.q+' <small>['+diffLabel+' · '+diffPts+']</small></div>'+
    '<div style="display:flex;align-items:center;gap:6px"><input class="qans" id="qans_'+q.id+'" type="number" step="0.01" placeholder="Respuesta">'+
    '<span id="qansStatus_'+q.id+'"></span></div>';
@@ -761,7 +789,7 @@ function gradeTest(){
   const inp=document.getElementById('qans_'+q.id);
   const status=document.getElementById('qansStatus_'+q.id);
   const val=parseFloat(inp.value);
-  const pts=q.type==='normal'?1:2;
+  const pts=q.type==='hard'?2:q.type==='normal'?1:0.5;
   maxTotal+=pts;
   if(!isNaN(val)&&Math.abs(val-q.ans)/Math.max(Math.abs(q.ans),1)<=q.tol){
    total+=pts;status.textContent='✓ '+pts+'pt';status.className='q-correct'

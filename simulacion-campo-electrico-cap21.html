@@ -1,1 +1,306 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><title>Campo Eléctrico I</title><style>body{margin:0;font-family:Arial,sans-serif;background:#fff8e6;color:#111}header{padding:10px 12px;background:#fff;border-bottom:3px solid #111}h1{margin:0;font-size:clamp(24px,6vw,46px)}.sub{font-weight:700;color:#0f55aa}.app{display:grid;grid-template-columns:1fr 390px;gap:10px;padding:10px;height:calc(100dvh - 88px)}.stage{border:3px solid #111;background:#fff;min-height:420px;position:relative;overflow:hidden}canvas{width:100%;height:100%;display:block;touch-action:none;background-image:linear-gradient(rgba(15,85,170,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(15,85,170,.09) 1px,transparent 1px);background-size:32px 32px}.tools{position:absolute;left:8px;top:8px;display:flex;gap:5px;flex-wrap:wrap}.tools button{padding:7px 9px;background:#fff}.panel{border:3px solid #111;background:#fff;overflow:auto}.sec{padding:10px;border-bottom:2px solid #111}h3{margin:0 0 8px;color:#0f55aa}button,select,input{font:inherit}button{border:2px solid #111;background:#ffd33d;font-weight:800;padding:8px;margin:2px;box-shadow:2px 2px 0 #111}button:active{transform:translate(2px,2px);box-shadow:none}input,select{width:100%;border:2px solid #111;padding:6px;background:#fff}.row{display:grid;grid-template-columns:1fr 1fr;gap:6px}.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}.card{border:2px solid #111;padding:7px;margin:7px 0;background:#fff}.metric{display:flex;justify-content:space-between;border:2px solid #111;padding:7px;margin:5px 0;font-weight:bold}.mini{font-size:12px;font-weight:700}.check{display:flex;gap:8px;align-items:center;font-weight:800}.check input{width:auto}.qpos{color:#e43622}.qneg{color:#0f55aa}@media(max-width:900px){.app{display:block;height:auto;padding:7px}.stage{height:65dvh;min-height:430px}.panel{margin-top:8px}.row,.row3{grid-template-columns:1fr 1fr}header{position:sticky;top:0;z-index:5}}</style></head><body><header><h1>Campo Eléctrico I</h1><div class="sub">Cargas puntuales, coordenadas, simetrías, zoom y carga de prueba · Profesor Wong</div></header><div class="app"><section class="stage"><canvas id="cv"></canvas><div class="tools"><button id="zin">Zoom +</button><button id="zout">Zoom -</button><button id="fit">Ver todo</button><button id="center">Centrar</button></div></section><aside class="panel"><div class="sec"><h3>Visualización</h3><label class="check"><input id="showTest" type="checkbox" checked> Mostrar carga de prueba</label><label class="check"><input id="vec" type="checkbox" checked> Mostrar vectores</label><label class="check"><input id="lin" type="checkbox" checked> Mostrar líneas de campo</label><p class="mini">En celular: arrastra cargas con un dedo. Usa Zoom +/- o Ver todo para que no se escondan.</p></div><div class="sec"><h3>Plantillas simétricas</h3><div class="row"><label>Forma<select id="shape"><option value="square">Cuadrado</option><option value="rect">Rectángulo</option><option value="poly">Polígono regular</option><option value="circle">Círculo</option></select></label><label>N cargas<input id="ncharges" type="number" min="3" max="12" value="6"></label></div><div class="row"><label>Radio X / radio<input id="rx" type="number" min="1" max="10" value="4" step="0.5"></label><label>Radio Y<input id="ry" type="number" min="1" max="10" value="4" step="0.5"></label></div><button id="makeShape">Crear simetría</button><p class="mini">El radio 1–10 se toma como escala visual. Luego puedes cambiar cada carga +/- y mover la prueba a cualquier punto.</p></div><div class="sec"><h3>Carga de prueba</h3><div class="row3"><label>q µC<input id="qt" type="number" value="1" step="0.1"></label><label>x<input id="tx" type="number" value="0" step="1"></label><label>y<input id="ty" type="number" value="0" step="1"></label></div></div><div class="sec"><h3>Cargas fuente</h3><div id="list"></div><button id="addp">+ carga</button><button id="addn">− carga</button><button id="del">Quitar</button><button id="reset">Reiniciar</button></div><div class="sec"><h3>Resultados en carga de prueba</h3><div class="metric"><span>|E|</span><span id="em">0</span></div><div class="metric"><span>Ex</span><span id="ex">0</span></div><div class="metric"><span>Ey</span><span id="ey">0</span></div><div class="metric"><span>|F|</span><span id="fm">0</span></div><div class="metric"><span>Dirección</span><span id="ang">0°</span></div></div></aside></div><script>const cv=document.getElementById('cv'),ctx=cv.getContext('2d'),k=8.9875517923e9,mpp=.01;let dpr=1,drag=null,C=[],T={x:0,y:0,q:1};let view={x:0,y:0,s:1};function D(){return{w:cv.width/dpr,h:cv.height/dpr}}function W(px,py){return{x:(px-D().w/2)/view.s-view.x,y:(py-D().h/2)/view.s-view.y}}function S(x,y){return{x:(x+view.x)*view.s+D().w/2,y:(y+view.y)*view.s+D().h/2}}function resetAll(){C=[{id:1,x:-160,y:-80,q:4},{id:2,x:160,y:-80,q:-3},{id:3,x:0,y:150,q:-2}];T={x:0,y:0,q:+qt.value||1};view={x:0,y:0,s:1};syncTest();render();draw()}function resize(){dpr=devicePixelRatio||1;let r=cv.getBoundingClientRect();cv.width=Math.max(320,Math.floor(r.width*dpr));cv.height=Math.max(320,Math.floor(r.height*dpr));ctx.setTransform(dpr,0,0,dpr,0,0);draw()}function field(x,y){let ex=0,ey=0;for(const c of C){let dx=x-c.x,dy=y-c.y,r=Math.max(Math.hypot(dx,dy),18),rm=r*mpp,e=k*c.q*1e-6/(rm*rm);ex+=e*dx/r;ey+=e*dy/r}return{ex,ey,mag:Math.hypot(ex,ey),a:Math.atan2(ey,ex)}}function sci(v,u){return(!isFinite(v)||Math.abs(v)<1e-9?'0':v.toExponential(2).replace('e+','×10^'))+' '+u}function arrow(x1,y1,x2,y2,c,w=2){let a=Math.atan2(y2-y1,x2-x1);ctx.strokeStyle=ctx.fillStyle=c;ctx.lineWidth=w;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-9*Math.cos(a-.5),y2-9*Math.sin(a-.5));ctx.lineTo(x2-9*Math.cos(a+.5),y2-9*Math.sin(a+.5));ctx.closePath();ctx.fill()}function drawCharge(c,t){let p=S(c.x,c.y),r=(t?18:23)*Math.max(.65,Math.min(1.25,view.s));ctx.fillStyle=t?'#16773a':c.q>=0?'#e43622':'#0f55aa';ctx.beginPath();ctx.arc(p.x,p.y,r,0,7);ctx.fill();ctx.lineWidth=3;ctx.strokeStyle='#111';ctx.stroke();ctx.fillStyle='#fff';ctx.font='bold '+Math.max(14,20*view.s)+'px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(t?'t':c.q>=0?'+':'−',p.x,p.y);ctx.fillStyle='#111';ctx.font='bold 11px Arial';ctx.fillText(t?'prueba':c.id,p.x,p.y+r+12)}function drawVectors(){let d=D();for(let py=65;py<d.h-20;py+=62)for(let px=35;px<d.w-20;px+=62){let w=W(px,py),e=field(w.x,w.y),L=12+Math.min(25,Math.log10(e.mag+1)*3);arrow(px-Math.cos(e.a)*L/2,py-Math.sin(e.a)*L/2,px+Math.cos(e.a)*L/2,py+Math.sin(e.a)*L/2,'rgba(15,85,170,.6)',1.3)}}function trace(x,y,s,col){ctx.strokeStyle=col;ctx.globalAlpha=.42;ctx.beginPath();let p=S(x,y);ctx.moveTo(p.x,p.y);for(let i=0;i<110;i++){let e=field(x,y),a=e.a+(s<0?Math.PI:0);x+=Math.cos(a)*7/view.s;y+=Math.sin(a)*7/view.s;p=S(x,y);ctx.lineTo(p.x,p.y)}ctx.stroke();ctx.globalAlpha=1}function drawLines(){for(const c of C)for(let i=0;i<14;i++){let a=2*Math.PI*i/14;trace(c.x+Math.cos(a)*24,c.y+Math.sin(a)*24,c.q>=0?1:-1,c.q>=0?'#e43622':'#0f55aa')}}function draw(){let d=D();ctx.clearRect(0,0,d.w,d.h);if(lin.checked)drawLines();if(vec.checked)drawVectors();C.forEach(c=>drawCharge(c,false));T.q=+qt.value||0;if(showTest.checked){drawCharge(T,true);let e=field(T.x,T.y),p=S(T.x,T.y),L=Math.min(95,18+Math.log10(e.mag+1)*8);arrow(p.x,p.y,p.x+Math.cos(e.a)*L,p.y+Math.sin(e.a)*L,'#16773a',4)}let e=field(T.x,T.y),f=Math.abs(T.q*1e-6)*e.mag;em.textContent=sci(e.mag,'N/C');ex.textContent=sci(e.ex,'N/C');ey.textContent=sci(e.ey,'N/C');fm.textContent=sci(f,'N');ang.textContent=((e.a*180/Math.PI+360)%360).toFixed(1)+'°';syncTest(false)}function syncTest(update=true){if(update){T.x=+tx.value||0;T.y=+ty.value||0;T.q=+qt.value||0}else{tx.value=Math.round(T.x);ty.value=Math.round(T.y)}}function render(){list.innerHTML='';C.forEach(c=>{let div=document.createElement('div');div.className='card';div.innerHTML='<b>Carga '+c.id+' <span class="'+(c.q>=0?'qpos':'qneg')+'">'+c.q.toFixed(1)+' µC</span></b><div class="row3"><label>q<input data-id="'+c.id+'" data-k="q" type="number" step="0.1" value="'+c.q+'"></label><label>x<input data-id="'+c.id+'" data-k="x" type="number" step="1" value="'+Math.round(c.x)+'"></label><label>y<input data-id="'+c.id+'" data-k="y" type="number" step="1" value="'+Math.round(c.y)+'"></label></div><input type="range" min="-10" max="10" step="0.1" value="'+c.q+'">';div.querySelectorAll('input[data-id]').forEach(inp=>inp.oninput=()=>{let cc=C.find(z=>z.id==inp.dataset.id);cc[inp.dataset.k]=+inp.value||0;render();draw()});let rg=div.querySelector('input[type=range]');rg.oninput=()=>{c.q=+rg.value;render();draw()};list.appendChild(div)})}function makeSym(){let n=Math.max(3,Math.min(12,+ncharges.value||6)),sx=(+rx.value||4)*45,sy=(+ry.value||4)*45,typ=shape.value;C=[];if(typ==='square'){C=[[-sx,-sx],[sx,-sx],[sx,sx],[-sx,sx]].map((p,i)=>({id:i+1,x:p[0],y:p[1],q:i%2? -2:2}))}else if(typ==='rect'){C=[[-sx,-sy],[sx,-sy],[sx,sy],[-sx,sy]].map((p,i)=>({id:i+1,x:p[0],y:p[1],q:i%2? -2:2}))}else{for(let i=0;i<n;i++){let a=-Math.PI/2+2*Math.PI*i/n;C.push({id:i+1,x:Math.cos(a)*sx,y:Math.sin(a)*(typ==='circle'?sx:sy),q:i%2? -2:2})}}T={x:0,y:0,q:+qt.value||1};fitAll();render();draw()}function fitAll(){let pts=[...C,T];let minx=Math.min(...pts.map(p=>p.x)),maxx=Math.max(...pts.map(p=>p.x)),miny=Math.min(...pts.map(p=>p.y)),maxy=Math.max(...pts.map(p=>p.y));let d=D(),bw=Math.max(1,maxx-minx),bh=Math.max(1,maxy-miny);view.s=Math.min(2.2,Math.max(.35,Math.min((d.w-90)/bw,(d.h-90)/bh)));view.x=-(minx+maxx)/2;view.y=-(miny+maxy)/2;draw()}function pos(e){let r=cv.getBoundingClientRect(),p=e.touches?e.touches[0]:e;return{x:p.clientX-r.left,y:p.clientY-r.top}}function down(e){e.preventDefault();let p=pos(e),all=showTest.checked?[...C,T]:C;drag=all.find(c=>{let s=S(c.x,c.y);return Math.hypot(p.x-s.x,p.y-s.y)<38})}function move(e){if(!drag)return;e.preventDefault();let p=pos(e),w=W(p.x,p.y);drag.x=w.x;drag.y=w.y;draw();render()}function up(){drag=null}cv.addEventListener('mousedown',down);addEventListener('mousemove',move);addEventListener('mouseup',up);cv.addEventListener('touchstart',down,{passive:false});addEventListener('touchmove',move,{passive:false});addEventListener('touchend',up);zin.onclick=()=>{view.s*=1.22;draw()};zout.onclick=()=>{view.s/=1.22;draw()};fit.onclick=fitAll;center.onclick=()=>{view.x=0;view.y=0;draw()};makeShape.onclick=makeSym;addp.onclick=()=>{C.push({id:C.length+1,x:0,y:0,q:2});render();draw()};addn.onclick=()=>{C.push({id:C.length+1,x:0,y:0,q:-2});render();draw()};del.onclick=()=>{C.pop();render();draw()};reset.onclick=resetAll;[qt,tx,ty,vec,lin,showTest].forEach(el=>el.oninput=el.onchange=()=>{syncTest();draw()});addEventListener('resize',resize);resetAll();setTimeout(()=>{resize();fitAll()},100);</script></body></html>
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Campo Eléctrico I — CIENCIA OMSAIRAM</title>
+<style>
+/* ===== PALETTES ===== */
+:root{--bg:#fff8e6;--card:#fff;--text:#111;--accent:#0f55aa;--border:#111;--btn:#ffd33d;--canvas-bg:#fff;--paper:#fff8e6;--blue:#0f55aa;--red:#e43622;--green:#16773a;--trace:#16773a;--header-bg:#fff;--shadow:rgba(0,0,0,.15);--tbl-head:#0f55aa;--slider-bg:#ddd}
+.Theme--blackboard{--bg:#1a1f2e;--card:#242a3d;--text:#e8eaf0;--accent:#6c8cff;--border:#3a4060;--btn:#6c8cff;--canvas-bg:#1e2435;--paper:#1a1f2e;--blue:#6c8cff;--red:#ff6b6b;--green:#4cd964;--trace:#6c8cff;--header-bg:#1a1f2e;--shadow:rgba(0,0,0,.3);--tbl-head:#6c8cff;--slider-bg:#3a4060}
+.Theme--davinci{--bg:#2b1f0e;--card:#3d2e18;--text:#f0e6d0;--accent:#d4a84b;--border:#6b4f2a;--btn:#d4a84b;--canvas-bg:#322415;--paper:#2b1f0e;--blue:#d4a84b;--red:#e8744a;--green:#8ab85c;--trace:#d4a84b;--header-bg:#2b1f0e;--shadow:rgba(0,0,0,.3);--tbl-head:#d4a84b;--slider-bg:#6b4f2a}
+.Theme--dark{--bg:#000;--card:#111;--text:#e0e0e0;--accent:#4488ff;--border:#333;--btn:#4488ff;--canvas-bg:#0a0a0a;--paper:#000;--blue:#4488ff;--red:#ff4444;--green:#44cc44;--trace:#4488ff;--header-bg:#000;--shadow:rgba(0,0,0,.5);--tbl-head:#4488ff;--slider-bg:#333}
+
+body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text);transition:background .2s,color .2s}
+header{padding:6px 10px;background:var(--header-bg);border-bottom:2px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+h1{margin:0;font-size:clamp(18px,4vw,32px)}.sub{font-weight:700;color:var(--accent);font-size:clamp(11px,2vw,14px)}
+.theme-bar{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:wrap}
+.theme-bar select{font-size:12px;padding:3px 5px;border:2px solid var(--border);background:var(--card);color:var(--text);border-radius:0}
+.theme-bar label{font-size:11px;display:flex;align-items:center;gap:3px;color:var(--text)}
+.theme-bar input[type=range]{width:50px;height:14px;accent-color:var(--accent)}
+.theme-bar button{padding:3px 8px;font-size:11px;border:2px solid var(--border);background:var(--btn);color:var(--text);font-weight:700;cursor:pointer;box-shadow:1px 1px 0 var(--shadow)}.theme-bar button:active{transform:translate(1px,1px);box-shadow:none}
+
+.app{display:grid;grid-template-columns:75% 25%;gap:6px;padding:6px;height:calc(100dvh - 48px);box-sizing:border-box}
+.stage{border:2px solid var(--border);background:var(--canvas-bg);position:relative;overflow:hidden}
+canvas{width:100%;height:100%;display:block;touch-action:none;background-image:linear-gradient(rgba(15,85,170,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(15,85,170,.09) 1px,transparent 1px);background-size:32px 32px}
+.tools{position:absolute;left:6px;top:6px;display:flex;gap:4px;flex-wrap:wrap}
+.tools button{padding:4px 7px;background:var(--card);color:var(--text);border:2px solid var(--border);font-size:11px;font-weight:700;cursor:pointer;box-shadow:1px 1px 0 var(--shadow)}.tools button:active{transform:translate(1px,1px);box-shadow:none}
+
+.panel{border:2px solid var(--border);background:var(--card);overflow-y:auto;display:flex;flex-direction:column;gap:0}
+.panel::-webkit-scrollbar{width:4px}.panel::-webkit-scrollbar-thumb{background:var(--border)}
+.sec{padding:5px 7px;border-bottom:1px solid var(--border)}
+.sec:last-child{border-bottom:none}
+h3{margin:0 0 3px;font-size:clamp(11px,1.4vw,13px);color:var(--accent)}
+button,select,input{font:inherit;color:var(--text)}
+button{cursor:pointer}
+.sec button{padding:3px 7px;font-size:11px;border:2px solid var(--border);background:var(--btn);color:var(--text);font-weight:700;margin:1px;box-shadow:1px 1px 0 var(--shadow)}.sec button:active{transform:translate(1px,1px);box-shadow:none}
+input,select{width:100%;border:2px solid var(--border);padding:3px 4px;background:var(--canvas-bg);box-sizing:border-box;font-size:11px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px}
+.card{border:1px solid var(--border);padding:4px 5px;margin:3px 0;background:var(--canvas-bg);font-size:11px}
+.card .row3 label{font-size:10px}
+.metric{display:flex;justify-content:space-between;border:1px solid var(--border);padding:3px 6px;margin:3px 0;font-weight:700;font-size:11px;background:var(--canvas-bg)}
+.mini{font-size:10px;font-weight:400;color:var(--text);opacity:.7;margin:2px 0}
+.check{display:flex;gap:6px;align-items:center;font-weight:700;font-size:11px}
+.check input{width:auto;accent-color:var(--accent)}
+.qpos{color:var(--red);font-weight:700}
+.qneg{color:var(--accent);font-weight:700}
+.print-btn{position:absolute;right:6px;bottom:6px;z-index:10}
+.print-btn button{padding:4px 8px;font-size:10px;background:var(--card);color:var(--text);border:2px solid var(--border);font-weight:700;cursor:pointer}
+
+@media(max-width:900px){
+.app{display:block;height:auto;padding:4px}
+.stage{height:55dvh;min-height:340px}
+.panel{margin-top:4px;max-height:none;overflow:visible}
+.row,.row3{grid-template-columns:1fr 1fr}
+header{position:sticky;top:0;z-index:5}
+.theme-bar select{font-size:10px}
+}
+@media print{header,.panel,.tools,.print-btn{display:none!important}.app{display:block;height:auto}.stage{border:none;height:100vh}canvas{height:100vh}}
+</style>
+</head>
+<body>
+<header>
+<h1>⚡ Campo Eléctrico I</h1>
+<div class="sub">Cargas puntuales · Coordenadas · Simetrías · Profesor Wong</div>
+<div class="theme-bar">
+<select id="themeSel">
+<option value="">Classic</option>
+<option value="Theme--blackboard">Blackboard</option>
+<option value="Theme--davinci">Da Vinci</option>
+<option value="Theme--dark">Dark</option>
+</select>
+<label>🌓<input id="modeSlider" type="range" min="0" max="100" value="100"></label>
+</div>
+</header>
+<div class="app">
+<section class="stage">
+<canvas id="cv"></canvas>
+<div class="tools">
+<button id="zin">Zoom +</button><button id="zout">Zoom −</button>
+<button id="fit">Ver todo</button><button id="center">Centrar</button>
+</div>
+<div class="print-btn"><button onclick="window.print()">🖨️ Imprimir</button></div>
+</section>
+<aside class="panel">
+<div class="sec">
+<h3>👁️ Visualización</h3>
+<label class="check"><input id="showTest" type="checkbox" checked> Carga prueba</label>
+<label class="check"><input id="vec" type="checkbox" checked> Vectores</label>
+<label class="check"><input id="lin" type="checkbox" checked> Líneas campo</label>
+<p class="mini">Arrastra cargas con el mouse/dedo</p>
+</div>
+<div class="sec">
+<h3>📐 Plantillas</h3>
+<div class="row">
+<label>Forma<select id="shape">
+<option value="square">Cuadrado</option>
+<option value="rect">Rectángulo</option>
+<option value="poly">Polígono</option>
+<option value="circle">Círculo</option>
+</select></label>
+<label>N<input id="ncharges" type="number" min="3" max="12" value="6"></label>
+</div>
+<div class="row">
+<label>Rx<input id="rx" type="number" min="1" max="10" value="4" step="0.5"></label>
+<label>Ry<input id="ry" type="number" min="1" max="10" value="4" step="0.5"></label>
+</div>
+<button id="makeShape">Crear simetría</button>
+</div>
+<div class="sec">
+<h3>🔵 Carga prueba</h3>
+<div class="row3">
+<label>q µC<input id="qt" type="number" value="1" step="0.1"></label>
+<label>x<input id="tx" type="number" value="0" step="1"></label>
+<label>y<input id="ty" type="number" value="0" step="1"></label>
+</div>
+</div>
+<div class="sec">
+<h3>📊 Resultados</h3>
+<div class="metric"><span>|E|</span><span id="em">0</span></div>
+<div class="metric"><span>Ex</span><span id="ex">0</span></div>
+<div class="metric"><span>Ey</span><span id="ey">0</span></div>
+<div class="metric"><span>|F|</span><span id="fm">0</span></div>
+<div class="metric"><span>Dirección</span><span id="ang">0°</span></div>
+</div>
+<div class="sec">
+<h3>⚡ Cargas fuente <span id="chargeCount" style="font-weight:400;font-size:10px"></span></h3>
+<div id="list"></div>
+<div style="display:flex;gap:3px;flex-wrap:wrap">
+<button id="addp">+ carga</button>
+<button id="addn">− carga</button>
+<button id="del">Quitar</button>
+<button id="reset">Reiniciar</button>
+</div>
+</div>
+</aside>
+</div>
+
+<script>
+// === THEME ENGINE ===
+const themeSel=document.getElementById('themeSel'),modeSlider=document.getElementById('modeSlider');
+let modeVal=100;
+function applyTheme(){
+  const t=themeSel.value;
+  document.documentElement.className=t;
+  if(t==='Theme--dark'){
+    const v=modeSlider.value/100;
+    const light=Math.round(10+v*10);
+    document.querySelector('html').style.setProperty('--bg',`rgb(${light},${light},${light})`);
+    document.querySelector('html').style.setProperty('--card',`rgb(${light+8},${light+8},${light+8})`);
+    document.querySelector('html').style.setProperty('--canvas-bg',`rgb(${light-3},${light-3},${light-3})`);
+  }else if(t==='Theme--blackboard'){
+    const v=modeSlider.value/100;
+    const b=Math.round(26+v*8);
+    document.querySelector('html').style.setProperty('--bg',`rgb(26,${b+5},${b+20})`);
+    document.querySelector('html').style.setProperty('--card',`rgb(36,${b+15},${b+30})`);
+  }else if(t==='Theme--davinci'){
+    const v=modeSlider.value/100;
+    document.querySelector('html').style.setProperty('--bg',`rgb(${43-v*10},${31-v*8},${14})`);
+  }else{
+    document.querySelector('html').style.setProperty('--bg','');
+    document.querySelector('html').style.setProperty('--card','');
+    document.querySelector('html').style.setProperty('--canvas-bg','');
+  }
+}
+themeSel.onchange=applyTheme;
+modeSlider.oninput=()=>{modeVal=modeSlider.value;applyTheme()};
+
+// === CANVAS ENGINE ===
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d'),k=8.9875517923e9,mpp=.01;
+let dpr=1,drag=null,C=[],T={x:0,y:0,q:1};
+let view={x:0,y:0,s:1};
+function D(){return{w:cv.width/dpr,h:cv.height/dpr}}
+function W(px,py){return{x:(px-D().w/2)/view.s-view.x,y:(py-D().h/2)/view.s-view.y}}
+function S(x,y){return{x:(x+view.x)*view.s+D().w/2,y:(y+view.y)*view.s+D().h/2}}
+function resetAll(){
+  C=[{id:1,x:-160,y:-80,q:4},{id:2,x:160,y:-80,q:-3},{id:3,x:0,y:150,q:-2}];
+  T={x:0,y:0,q:+qt.value||1};
+  view={x:0,y:0,s:1};syncTest();render();draw();chargeCount.textContent='('+C.length+')'
+}
+function resize(){
+  dpr=devicePixelRatio||1;
+  let r=cv.getBoundingClientRect();
+  cv.width=Math.max(320,Math.floor(r.width*dpr));
+  cv.height=Math.max(320,Math.floor(r.height*dpr));
+  ctx.setTransform(dpr,0,0,dpr,0,0);draw()
+}
+function field(x,y){
+  let ex=0,ey=0;
+  for(const c of C){let dx=x-c.x,dy=y-c.y,r=Math.max(Math.hypot(dx,dy),18),rm=r*mpp,e=k*c.q*1e-6/(rm*rm);ex+=e*dx/r;ey+=e*dy/r}
+  return{ex,ey,mag:Math.hypot(ex,ey),a:Math.atan2(ey,ex)}
+}
+function sci(v,u){return(!isFinite(v)||Math.abs(v)<1e-9?'0':v.toExponential(2).replace('e+','×10^'))+' '+u}
+function arrow(x1,y1,x2,y2,c,w){
+  let a=Math.atan2(y2-y1,x2-x1);
+  ctx.strokeStyle=ctx.fillStyle=c;ctx.lineWidth=w||2;
+  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-9*Math.cos(a-.5),y2-9*Math.sin(a-.5));
+  ctx.lineTo(x2-9*Math.cos(a+.5),y2-9*Math.sin(a+.5));ctx.closePath();ctx.fill()
+}
+function drawCharge(c,t){
+  let p=S(c.x,c.y),r=(t?18:23)*Math.max(.65,Math.min(1.25,view.s));
+  ctx.fillStyle=t?'var(--green,#16773a)':c.q>=0?'var(--red,#e43622)':'var(--accent,#0f55aa)';
+  ctx.beginPath();ctx.arc(p.x,p.y,r,0,7);ctx.fill();
+  ctx.lineWidth=3;ctx.strokeStyle='var(--border,#111)';ctx.stroke();
+  ctx.fillStyle='#fff';ctx.font='bold '+Math.max(14,20*view.s)+'px Arial';
+  ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(t?'t':c.q>=0?'+':'−',p.x,p.y);
+  ctx.fillStyle='var(--text,#111)';ctx.font='bold 11px Arial';ctx.fillText(t?'prueba':c.id,p.x,p.y+r+12)
+}
+function drawVectors(){
+  let d=D();
+  for(let py=65;py<d.h-20;py+=62)for(let px=35;px<d.w-20;px+=62){
+    let w=W(px,py),e=field(w.x,w.y),L=12+Math.min(25,Math.log10(e.mag+1)*3);
+    arrow(px-Math.cos(e.a)*L/2,py-Math.sin(e.a)*L/2,px+Math.cos(e.a)*L/2,py+Math.sin(e.a)*L/2,'rgba(15,85,170,.6)',1.3)
+  }
+}
+function trace(x,y,s,col){
+  let a;ctx.strokeStyle=col;ctx.globalAlpha=.42;ctx.beginPath();
+  let p=S(x,y);ctx.moveTo(p.x,p.y);
+  for(let i=0;i<110;i++){let e=field(x,y);a=e.a+(s<0?Math.PI:0);
+    x+=Math.cos(a)*7/view.s;y+=Math.sin(a)*7/view.s;p=S(x,y);ctx.lineTo(p.x,p.y)}
+  ctx.stroke();ctx.globalAlpha=1
+}
+function drawLines(){
+  for(const c of C)for(let i=0;i<14;i++){let a=2*Math.PI*i/14;
+    trace(c.x+Math.cos(a)*24,c.y+Math.sin(a)*24,c.q>=0?1:-1,c.q>=0?'var(--red,#e43622)':'var(--accent,#0f55aa)')}
+}
+function draw(){
+  let d=D();ctx.clearRect(0,0,d.w,d.h);
+  if(lin.checked)drawLines();
+  if(vec.checked)drawVectors();
+  C.forEach(c=>drawCharge(c,false));
+  T.q=+qt.value||0;
+  if(showTest.checked){drawCharge(T,true);
+    let e=field(T.x,T.y),p=S(T.x,T.y),L=Math.min(95,18+Math.log10(e.mag+1)*8);
+    arrow(p.x,p.y,p.x+Math.cos(e.a)*L,p.y+Math.sin(e.a)*L,'var(--green,#16773a)',4)}
+  let e=field(T.x,T.y),f=Math.abs(T.q*1e-6)*e.mag;
+  em.textContent=sci(e.mag,'N/C');ex.textContent=sci(e.ex,'N/C');
+  ey.textContent=sci(e.ey,'N/C');fm.textContent=sci(f,'N');
+  ang.textContent=((e.a*180/Math.PI+360)%360).toFixed(1)+'°';syncTest(false)
+}
+function syncTest(update){
+  if(update){T.x=+tx.value||0;T.y=+ty.value||0;T.q=+qt.value||0}
+  else{tx.value=Math.round(T.x);ty.value=Math.round(T.y)}
+}
+function render(){
+  list.innerHTML='';
+  C.forEach(c=>{
+    let div=document.createElement('div');div.className='card';
+    div.innerHTML='<b>Carga '+c.id+' <span class="'+(c.q>=0?'qpos':'qneg')+'">'+c.q.toFixed(1)+' µC</span></b>'+
+    '<div class="row3"><label>q<input data-id="'+c.id+'" data-k="q" type="number" step="0.1" value="'+c.q+'"></label>'+
+    '<label>x<input data-id="'+c.id+'" data-k="x" type="number" step="1" value="'+Math.round(c.x)+'"></label>'+
+    '<label>y<input data-id="'+c.id+'" data-k="y" type="number" step="1" value="'+Math.round(c.y)+'"></label></div>'+
+    '<input type="range" min="-10" max="10" step="0.1" value="'+c.q+'">';
+    div.querySelectorAll('input[data-id]').forEach(inp=>inp.oninput=()=>{
+      let cc=C.find(z=>z.id==inp.dataset.id);cc[inp.dataset.k]=+inp.value||0;render();draw()});
+    let rg=div.querySelector('input[type=range]');
+    rg.oninput=()=>{c.q=+rg.value;render();draw()};
+    list.appendChild(div)
+  });
+  chargeCount.textContent='('+C.length+')'
+}
+function makeSym(){
+  let n=Math.max(3,Math.min(12,+ncharges.value||6)),sx=(+rx.value||4)*45,sy=(+ry.value||4)*45,typ=shape.value;C=[];
+  if(typ==='square'){C=[[-sx,-sx],[sx,-sx],[sx,sx],[-sx,sx]].map((p,i)=>({id:i+1,x:p[0],y:p[1],q:i%2?-2:2}))}
+  else if(typ==='rect'){C=[[-sx,-sy],[sx,-sy],[sx,sy],[-sx,sy]].map((p,i)=>({id:i+1,x:p[0],y:p[1],q:i%2?-2:2}))}
+  else{for(let i=0;i<n;i++){let a=-Math.PI/2+2*Math.PI*i/n;
+    C.push({id:i+1,x:Math.cos(a)*sx,y:Math.sin(a)*(typ==='circle'?sx:sy),q:i%2?-2:2})}}
+  T={x:0,y:0,q:+qt.value||1};fitAll();render();draw()
+}
+function fitAll(){
+  let pts=[...C,T],minx=Math.min(...pts.map(p=>p.x)),maxx=Math.max(...pts.map(p=>p.x)),
+      miny=Math.min(...pts.map(p=>p.y)),maxy=Math.max(...pts.map(p=>p.y));
+  let d=D(),bw=Math.max(1,maxx-minx),bh=Math.max(1,maxy-miny);
+  view.s=Math.min(2.2,Math.max(.35,Math.min((d.w-90)/bw,(d.h-90)/bh)));
+  view.x=-(minx+maxx)/2;view.y=-(miny+maxy)/2;draw()
+}
+function pos(e){
+  let r=cv.getBoundingClientRect(),p=e.touches?e.touches[0]:e;
+  return{x:p.clientX-r.left,y:p.clientY-r.top}
+}
+function down(e){e.preventDefault();
+  let p=pos(e),all=showTest.checked?[...C,T]:C;
+  drag=all.find(c=>{let s=S(c.x,c.y);return Math.hypot(p.x-s.x,p.y-s.y)<38})}
+function move(e){if(!drag)return;e.preventDefault();
+  let p=pos(e),w=W(p.x,p.y);drag.x=w.x;drag.y=w.y;draw();render()}
+function up(){drag=null}
+cv.addEventListener('mousedown',down);
+addEventListener('mousemove',move);addEventListener('mouseup',up);
+cv.addEventListener('touchstart',down,{passive:false});
+addEventListener('touchmove',move,{passive:false});addEventListener('touchend',up);
+zin.onclick=()=>{view.s*=1.22;draw()};
+zout.onclick=()=>{view.s/=1.22;draw()};
+fit.onclick=fitAll;
+center.onclick=()=>{view.x=0;view.y=0;draw()};
+makeShape.onclick=makeSym;
+addp.onclick=()=>{C.push({id:C.length+1,x:0,y:0,q:2});render();draw();chargeCount.textContent='('+C.length+')'};
+addn.onclick=()=>{C.push({id:C.length+1,x:0,y:0,q:-2});render();draw();chargeCount.textContent='('+C.length+')'};
+del.onclick=()=>{C.pop();render();draw();chargeCount.textContent='('+C.length+')'};
+reset.onclick=resetAll;
+[qt,tx,ty,vec,lin,showTest].forEach(el=>el.oninput=el.onchange=()=>{syncTest();draw()});
+addEventListener('resize',resize);
+resetAll();setTimeout(()=>{resize();fitAll()},100);
+</script>
+</body>
+</html>

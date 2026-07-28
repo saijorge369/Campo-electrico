@@ -615,7 +615,7 @@ document.getElementById('resetBtn').onclick=resetAll;
 document.getElementById('undoBtn').onclick=undoLast;
 document.getElementById('placeLineBtn').onclick=placeChargeLine;
 ['tq','tx','ty','chkVectors','chkLines','chkEqui'].forEach(id=>{
- document.getElementById(id).oninput=document.getElementById(id).onchange=()=>{syncTest();draw()}
+ document.getElementById(id).oninput=document.getElementById(id).onchange=()=>{syncTest(true);draw()}
 });
 document.getElementById('chkTest').onchange=function(){
  let s=document.getElementById('chkTest').nextElementSibling.nextElementSibling;
